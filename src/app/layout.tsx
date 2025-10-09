@@ -5,7 +5,9 @@ import '@/app/globals.css'
 import {cn} from '@/lib/utils'
 
 import YandexMetrika from '~/global/analytics'
-import {Toaster} from '@/components/ui/sonner'
+
+import Header from '~/global/header'
+import {Toaster} from '~/ui/sonner'
 
 export default function RootLayout({
   children,
@@ -15,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn([geistSans.variable, geistMono.variable], 'bg-background text-foreground', 'tracking-tight antialiased')}>
+        <Header />
         {children}
 
         <Toaster />
