@@ -4,10 +4,11 @@ import '@/app/globals.css'
 
 import {cn} from '@/lib/utils'
 
+import {ConvexProvider} from '@/lib/convex'
 import {ThemeProvider} from 'next-themes'
-import YandexMetrika from '~/global/analytics'
 
 import Header from '~/global/header'
+import YandexMetrika from '~/global/analytics'
 import {Toaster} from '~/ui/sonner'
 
 export default function RootLayout({
@@ -18,13 +19,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn([geistSans.variable, geistMono.variable], 'bg-background text-foreground', 'tracking-tight antialiased')}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Header />
-          {children}
+        <ConvexProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <Header />
+            {children}
 
-          <Toaster />
-          {process.env.NODE_ENV === 'production' && <YandexMetrika />}
-        </ThemeProvider>
+            <Toaster />
+            {process.env.NODE_ENV === 'production' && <YandexMetrika />}
+          </ThemeProvider>
+        </ConvexProvider>
       </body>
     </html>
   )
