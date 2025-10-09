@@ -4,6 +4,8 @@ import '@/app/globals.css'
 
 import {cn} from '@/lib/utils'
 
+import YandexMetrika from '~/global/analytics'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -11,7 +13,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn([geistSans.variable, geistMono.variable], 'bg-background text-foreground', 'tracking-tight antialiased')}>{children}</body>
+      <body className={cn([geistSans.variable, geistMono.variable], 'bg-background text-foreground', 'tracking-tight antialiased')}>
+        {children}
+
+        {process.env.NODE_ENV === 'production' && <YandexMetrika />}
+      </body>
     </html>
   )
 }
