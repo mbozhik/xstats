@@ -83,3 +83,4 @@ The product should later be extendable so that any user can input a different ha
 - table
 - tabs
 - textarea
+- typography
