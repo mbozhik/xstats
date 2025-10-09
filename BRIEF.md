@@ -44,3 +44,42 @@ The product should later be extendable so that any user can input a different ha
 - Scheduling auto-refresh (daily/weekly).
 - Multi-user dashboard with saved configurations.
 - Export/share options for embedding cards externally.
+
+## UI Components and Design System
+
+**Technology Stack:**
+
+- Use shadcn/ui components from `@/components/ui/` for all UI elements
+- All interface elements must be built using these components
+- Ensure consistent styling and theming across the entire application
+
+**Available UI Components:**
+
+- alert-dialog
+- alert
+- avatar
+- badge
+- button-group
+- button
+- card
+- collapsible
+- command
+- dialog
+- drawer
+- empty
+- form
+- hover-card
+- input-group
+- input
+- item
+- kbd
+- label
+- popover
+- select
+- separator
+- skeleton
+- sonner
+- spinner
+- table
+- tabs
+- textarea

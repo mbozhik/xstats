@@ -5,6 +5,7 @@ import '@/app/globals.css'
 import {cn} from '@/lib/utils'
 
 import YandexMetrika from '~/global/analytics'
+import {Toaster} from '@/components/ui/sonner'
 
 export default function RootLayout({
   children,
@@ -16,6 +17,7 @@ export default function RootLayout({
       <body className={cn([geistSans.variable, geistMono.variable], 'bg-background text-foreground', 'tracking-tight antialiased')}>
         {children}
 
+        <Toaster />
         {process.env.NODE_ENV === 'production' && <YandexMetrika />}
       </body>
     </html>
