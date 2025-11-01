@@ -84,3 +84,60 @@ The product should later be extendable so that any user can input a different ha
 - tabs
 - textarea
 - typography
+
+## Plan for V1
+
+### Database Schema Updates
+
+- [х] Add `users` table to Convex schema with fields:
+  - `id` (X user ID)
+  - `username` (X handle without @)
+  - `name` (display name)
+  - `avatar` (profile image URL)
+  - `requestCount` (number of times stats were requested)
+  - `lastRequestedAt` (timestamp of last stats request)
+  - `createdAt` (when user was first added)
+  - `updatedAt` (when user data was last updated)
+
+### Convex Functions
+
+- [х] `getOrCreateUser` - get existing user or create new from Twitter API data
+- [х] `updateUserRequestStats` - increment request count and update last requested timestamp
+- [х] `getUserByUsername` - find user in database by username
+- [х] Enhanced stats functions to link with users table
+
+### Twitter API Integration
+
+- [ ] Add Twitter API client using RapidAPI
+- [ ] `getUserData(username)` - fetch basic user info from `/v3/user/by-username`
+- [ ] `getUserInteractions(userId, targetUsername)` - fetch tweets/replies/engagements relative to target account
+- [ ] Error handling for API limits and invalid users
+- [ ] Data transformation to match our schema format
+
+### UI Updates
+
+- [ ] Update `generator-form.tsx` to:
+  - Check if user exists in Convex on username input
+  - Show user preview card with avatar, name, last scraped date
+  - Show "not scraped yet" for new users
+  - Enable/disable generate button based on user existence
+- [ ] Add loading states for API calls
+- [ ] Add error handling for invalid usernames
+
+### Stats Generation Flow
+
+- [ ] When "Generate" clicked:
+  - Fetch fresh user data from Twitter API
+  - Update/create user record in Convex
+  - Fetch interaction data with target account (@SuiTrcommunity)
+  - Calculate metrics (tweets, replies, likes, retweets, quotes, mentions)
+  - Save new stats entry to Convex
+  - Update user's request count and timestamp
+
+### Additional Considerations
+
+- [ ] Add rate limiting for Twitter API calls
+- [ ] Cache user data to avoid unnecessary API calls
+- [ ] Add proper error messages for API failures
+- [ ] Consider adding target account selection (for future extensibility)
+- [ ] Add data validation and sanitization

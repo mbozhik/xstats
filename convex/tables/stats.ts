@@ -1,19 +1,19 @@
 import {mutation, query} from '@convex/_generated/server'
 import {v} from 'convex/values'
 
-// Save or update interaction stats between two X accounts
-export const upsertInteractionStats = mutation({
+// Save new interaction stats between two X accounts (creates new entry each time)
+export const createInteractionStats = mutation({
   args: {
-    // Account being analyzed (e.g., "@bozzhik")
-    analyzedAccount: v.object({
+    // Subject account being analyzed (e.g., "@bozzhik")
+    subject: v.object({
       username: v.string(),
       name: v.string(),
       profileImage: v.optional(v.string()),
-      id: v.optional(v.string()),
+      id: v.string(),
     }),
 
-    // Target account for interaction analysis (e.g., "@sui")
-    targetAccount: v.object({
+    // Reference account for interaction analysis (e.g., "@sui")
+    reference: v.object({
       username: v.string(),
       name: v.string(),
       profileImage: v.optional(v.string()),
@@ -23,81 +23,65 @@ export const upsertInteractionStats = mutation({
     interactions: v.object({
       tweetsCount: v.number(),
       repliesCount: v.number(),
+      quotesCount: v.number(),
       likesCount: v.number(),
       retweetsCount: v.number(),
-      quotesCount: v.number(),
       mentionsCount: v.number(),
       impressions: v.optional(v.number()),
-      engagement: v.optional(v.number()),
     }),
   },
   handler: async (ctx, args) => {
     const now = Date.now()
 
-    // Check if interaction stats already exist for this pair
-    const existingStats = await ctx.db
-      .query('stats')
-      .withIndex('by_analyzed_and_target', (q) => q.eq('analyzedAccount.username', args.analyzedAccount.username).eq('targetAccount.username', args.targetAccount.username))
-      .first()
-
-    if (existingStats) {
-      // Update existing interaction stats
-      await ctx.db.patch(existingStats._id, {
-        analyzedAccount: args.analyzedAccount,
-        targetAccount: args.targetAccount,
-        interactions: args.interactions,
-        collectedAt: now,
-      })
-      return existingStats._id
-    } else {
-      // Create new interaction stats entry
-      const statsId = await ctx.db.insert('stats', {
-        analyzedAccount: args.analyzedAccount,
-        targetAccount: args.targetAccount,
-        interactions: args.interactions,
-        collectedAt: now,
-      })
-      return statsId
-    }
+    // Always create new interaction stats entry (history of all generations)
+    const statsId = await ctx.db.insert('stats', {
+      subject: args.subject,
+      reference: args.reference,
+      interactions: args.interactions,
+      collectedAt: now,
+    })
+    return statsId
   },
 })
 
-// Get interaction stats for a specific analyzed account with a target
+// Note: upsertInteractionStats removed - using createInteractionStats for history tracking
+
+// Get interaction stats for a specific subject account with a reference
 export const getInteractionStats = query({
   args: {
-    analyzedUsername: v.string(), // @username of account being analyzed
-    targetUsername: v.string(), // @username of target account
+    subjectUsername: v.string(), // @username of subject account
+    referenceUsername: v.string(), // @username of reference account
   },
   handler: async (ctx, args) => {
     return await ctx.db
       .query('stats')
-      .withIndex('by_analyzed_and_target', (q) => q.eq('analyzedAccount.username', args.analyzedUsername).eq('targetAccount.username', args.targetUsername))
+      .withIndex('by_subject_and_reference', (q) => q.eq('subject.username', args.subjectUsername).eq('reference.username', args.referenceUsername))
       .first()
   },
 })
 
-// Get all interaction stats for a specific analyzed account (all targets)
-export const getAllInteractionStatsForAnalyzed = query({
+// Get all interaction stats for a specific subject account (all references)
+export const getAllInteractionStatsForSubject = query({
   args: {
-    analyzedUsername: v.string(), // @username of account being analyzed
+    subjectUsername: v.string(), // @username of subject account
   },
   handler: async (ctx, args) => {
     return await ctx.db
       .query('stats')
-      .withIndex('by_analyzed_account', (q) => q.eq('analyzedAccount.username', args.analyzedUsername))
+      .withIndex('by_subject', (q) => q.eq('subject.username', args.subjectUsername))
       .collect()
   },
 })
 
-// Get all interaction stats for a specific target account (all analyzers)
-export const getAllInteractionStatsForTarget = query({
+// Get all interaction stats for a specific reference account (all subjects)
+export const getAllInteractionStatsForReference = query({
   args: {
-    targetUsername: v.string(), // @username of target account
+    referenceUsername: v.string(), // @username of reference account
   },
   handler: async (ctx, args) => {
     return await ctx.db
       .query('stats')
-      .withIndex('by_target_account', (q) => q.eq('targetAccount.username', args.targetUsername))
+      .withIndex('by_reference', (q) => q.eq('reference.username', args.referenceUsername))
       .collect()
   },
 })
@@ -113,30 +97,4 @@ export const getRecentStats = query({
   },
 })
 
-// Get unique analyzed account handles (for basic listing)
-export const getUniqueAnalyzedAccountUsernames = query({
-  handler: async (ctx) => {
-    const allStats = await ctx.db.query('stats').collect()
-    const analyzedUsernames = new Set<string>()
-
-    for (const stat of allStats) {
-      analyzedUsernames.add(stat.analyzedAccount.username)
-    }
-
-    return Array.from(analyzedUsernames).sort()
-  },
-})
-
-// Get unique target account handles (for basic listing)
-export const getUniqueTargetAccountUsernames = query({
-  handler: async (ctx) => {
-    const allStats = await ctx.db.query('stats').collect()
-    const targetUsernames = new Set<string>()
-
-    for (const stat of allStats) {
-      targetUsernames.add(stat.targetAccount.username)
-    }
-
-    return Array.from(targetUsernames).sort()
-  },
-})
+// Note: getUnique* functions removed - inefficient queries, can be added later if needed
