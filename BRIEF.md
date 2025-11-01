@@ -108,11 +108,11 @@ The product should later be extendable so that any user can input a different ha
 
 ### Twitter API Integration
 
-- [ ] Add Twitter API client using RapidAPI
-- [ ] `getUserData(username)` - fetch basic user info from `/v3/user/by-username`
-- [ ] `getUserInteractions(userId, targetUsername)` - fetch tweets/replies/engagements relative to target account
-- [ ] Error handling for API limits and invalid users
-- [ ] Data transformation to match our schema format
+- [x] Add Twitter API client using RapidAPI
+- [x] `getUserData(username)` - fetch basic user info from `/v3/user/by-username`
+- [x] `getUserInteractions(userId, targetUsername)` - fetch tweets/replies/engagements relative to target account
+- [x] Error handling for API limits and invalid users
+- [x] Data transformation to match our schema format
 
 ### UI Updates
 
