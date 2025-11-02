@@ -1,5 +1,5 @@
 import Container from '~/global/container'
-import GeneratorForm from '~~/index/generator-form'
+import StatsGenerator from '~~/index/stats-generator'
 import {H1, SPAN} from '~/ui/typography'
 
 export default function IndexPage() {
@@ -10,7 +10,7 @@ export default function IndexPage() {
         <SPAN className="text-muted-foreground">Enter your X username to create a personalized card</SPAN>
       </section>
 
-      <GeneratorForm />
+      <StatsGenerator />
     </Container>
   )
 }
