@@ -8,13 +8,21 @@
  * @module
  */
 
+import type * as tables_communities from "../tables/communities.js";
+import type * as tables_stats from "../tables/stats.js";
+import type * as tables_users from "../tables/users.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  "tables/communities": typeof tables_communities;
+  "tables/stats": typeof tables_stats;
+  "tables/users": typeof tables_users;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.
