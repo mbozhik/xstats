@@ -6,6 +6,8 @@ import {cn} from '@/lib/utils'
 
 import YandexMetrika from '~/global/analytics'
 
+import Header from '~/global/header'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -14,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn([geistSans.variable, geistMono.variable], 'bg-background text-foreground', 'tracking-tight antialiased')}>
+        <Header />
         {children}
 
         {process.env.NODE_ENV === 'production' && <YandexMetrika />}
