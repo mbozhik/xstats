@@ -1,3 +1,5 @@
+import Container from '~/global/container'
+
 export default function IndexPage() {
-  return <div>xstats by bozzhik</div>
+  return <Container>xstats by bozzhik</Container>
 }
