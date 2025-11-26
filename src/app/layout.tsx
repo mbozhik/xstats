@@ -4,6 +4,7 @@ import '@/app/globals.css'
 
 import {cn} from '@/lib/utils'
 
+import {ConvexProvider} from '@/lib/convex'
 import {ThemeProvider} from 'next-themes'
 import YandexMetrika from '~/global/analytics'
 
@@ -17,10 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn([geistSans.variable, geistMono.variable], 'bg-background text-foreground', 'tracking-tight antialiased')}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Header />
-          {children}
-        </ThemeProvider>
+        <ConvexProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <Header />
+            {children}
+          </ThemeProvider>
+        </ConvexProvider>
 
         {process.env.NODE_ENV === 'production' && <YandexMetrika />}
       </body>
