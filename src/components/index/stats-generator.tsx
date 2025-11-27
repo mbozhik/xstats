@@ -2,22 +2,33 @@
 
 import type {UserStatsData, GenerateStatsResponse} from '@/lib/x-api/types'
 
+import {useCommunity} from '@/hooks/use-community'
+
 import {useState} from 'react'
 import {toast} from 'sonner'
 
 import {Alert, AlertTitle, AlertDescription} from '~/ui/alert'
+import {Skeleton} from '~/ui/skeleton'
+import {Spinner} from '~/ui/spinner'
 
 export default function StatsGenerator() {
+  const {community, isLoading: communityLoading, error: communityError, isValid: communityValid} = useCommunity()
+
   const [username, setUsername] = useState('')
-  const [communitySlug, setCommunitySlug] = useState('sui-tr-community')
   const [isGenerating, setIsGenerating] = useState(false)
   const [result, setResult] = useState<UserStatsData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const handleGenerate = async () => {
-    if (!username.trim() || !communitySlug.trim()) {
-      console.warn('Please fill in both username and community slug')
-      toast.error('Please fill in both username and community slug')
+    if (!username.trim()) {
+      console.warn('Please enter a username')
+      toast.error('Please enter a username')
+      return
+    }
+
+    if (!communityValid) {
+      console.warn('Invalid or missing community')
+      toast.error(communityError || 'Invalid community')
       return
     }
 
@@ -31,7 +42,7 @@ export default function StatsGenerator() {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           username: username.trim(),
-          communitySlug: communitySlug.trim(),
+          communitySlug: community!.slug,
         }),
       })
 
@@ -70,22 +81,27 @@ export default function StatsGenerator() {
     }
   }
 
+  if (communityLoading) {
+    return (
+      <Skeleton className="h-[20vh] grid place-items-center">
+        <Spinner className="size-4" />
+      </Skeleton>
+    )
+  }
+
+  if (communityError || !communityValid) {
+    return <Skeleton className="h-[20vh] grid place-items-center bg-red-950/20"></Skeleton>
+  }
+
   return (
     <section className="space-y-6">
-      <h1 className="text-2xl font-bold">X Stats Generator</h1>
-
       <div className="space-y-4">
         <div className="space-y-1.5">
           <label className="block text-sm font-medium text-foreground">Username</label>
           <input type="text" placeholder="yuppibaladam" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-2 bg-background border border-input rounded text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none" />
         </div>
 
-        <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-foreground">Community Slug</label>
-          <input type="text" placeholder="sui-tr-community" value={communitySlug} onChange={(e) => setCommunitySlug(e.target.value)} className="w-full p-2 bg-background border border-input rounded text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none" />
-        </div>
-
-        <button onClick={handleGenerate} disabled={!username.trim() || !communitySlug.trim() || isGenerating} className="w-full p-2 bg-primary text-primary-foreground rounded disabled:opacity-50 hover:bg-primary/90 transition-colors">
+        <button onClick={handleGenerate} disabled={!username.trim() || !communityValid || isGenerating || communityLoading} className="w-full p-2 bg-primary text-primary-foreground rounded disabled:opacity-50 hover:bg-primary/90 transition-colors">
           {isGenerating ? 'Generating...' : 'Generate Stats'}
         </button>
       </div>
