@@ -9,6 +9,7 @@ import {ThemeProvider} from 'next-themes'
 import YandexMetrika from '~/global/analytics'
 
 import Header from '~/global/header'
+import {Toaster} from '~/ui/sonner'
 
 export default function RootLayout({
   children,
@@ -22,6 +23,8 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <Header />
             {children}
+
+            <Toaster />
           </ThemeProvider>
         </ConvexProvider>
 

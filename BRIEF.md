@@ -97,3 +97,52 @@ The service provides rental services for communities. For example:
 - Multi-user dashboard with saved configurations
 - Analytics dashboard for community managers
 - API access for communities to integrate stats into their platforms
+
+## UI Components and Design System
+
+**Technology Stack:**
+
+- Use shadcn/ui components from `@/components/ui/` for all UI elements
+- All interface elements must be built using these components
+- Ensure consistent styling and theming across the entire application
+
+**Available UI Components:**
+
+- accordion
+- alert-dialog
+- alert
+- avatar
+- badge
+- button-group
+- button
+- card
+- carousel
+- chart
+- collapsible
+- command
+- dialog
+- drawer
+- dropdown-menu
+- empty
+- form
+- hover-card
+- input-group
+- input
+- item
+- kbd
+- label
+- popover
+- progress
+- select
+- separator
+- skeleton
+- sonner
+- spinner
+- switch
+- table
+- tabs
+- textarea
+- toggle-group
+- toggle
+- tooltip
+- typography
