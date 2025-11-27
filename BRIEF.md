@@ -41,7 +41,7 @@ The service provides rental services for communities. For example:
 - `name` - display name from X profile
 - `avatar` - profile picture from X
 - `followersCount` - number of followers
-- `requestCount` - number of requestet stats
+- `requestCount` - number of requested stats
 - `lastActivity` - when user last requested stats
 
 ### 2. Communities - usernames + hashtags + cashtags that communities rent access to
@@ -85,7 +85,6 @@ The service provides rental services for communities. For example:
 - Input field for user X handle
 - Fetch data from X API for interactions with target usernames/hashtags/cashtags
 - Aggregate and calculate engagement metrics
-- Generate a Stats Card (PNG/SVG) with profile info and metrics
 - Store all entities in Convex database
 - Preview screen for the generated card
 - Generate a Stats Card (PNG/SVG) with profile info and metrics

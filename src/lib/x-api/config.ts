@@ -20,7 +20,7 @@ export const xApiProvider: XApiProvider = {
   baseUrl: 'https://twitter-api45.p.rapidapi.com',
   headers: {
     'x-rapidapi-host': 'twitter-api45.p.rapidapi.com',
-    'x-rapidapi-key': process.env.X_RAPIDAPI_KEY || '',
+    'x-rapidapi-key': process.env.X_RAPIDAPI_KEY!,
   },
   endpoints: {
     userInfo: {
@@ -44,3 +44,8 @@ export const xApiProvider: XApiProvider = {
 }
 
 export type XApiEndpointKey = keyof typeof xApiProvider.endpoints
+
+// Lite mode for development - simpler queries to save API limits
+// In lite mode: searches only for hashtag (without #) in user's tweets
+// Full mode: searches for @username mentions, #hashtags, and $cashtags
+export const LITE_MODE = process.env.X_RAPIDAPI_LITE_MODE !== 'false'

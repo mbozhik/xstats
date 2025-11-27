@@ -8,7 +8,7 @@ export default defineSchema({
     name: v.string(), // display name from X profile
     avatar: v.string(), // profile picture from X
     followersCount: v.number(), // number of followers
-    requestCount: v.number(), // number of requestet stats
+    requestCount: v.number(), // number of requested stats
     lastActivity: v.number(), // when user last requested stats
   })
     .index('by_x_id', ['id'])
