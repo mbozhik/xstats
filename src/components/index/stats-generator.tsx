@@ -1,8 +1,11 @@
 'use client'
 
-import type {UserStatsData} from '@/lib/x-api/types'
+import type {UserStatsData, GenerateStatsResponse} from '@/lib/x-api/types'
 
 import {useState} from 'react'
+import {toast} from 'sonner'
+
+import {Alert, AlertTitle, AlertDescription} from '~/ui/alert'
 
 export default function StatsGenerator() {
   const [username, setUsername] = useState('')
@@ -12,7 +15,11 @@ export default function StatsGenerator() {
   const [error, setError] = useState<string | null>(null)
 
   const handleGenerate = async () => {
-    if (!username.trim() || !communitySlug.trim()) return
+    if (!username.trim() || !communitySlug.trim()) {
+      console.warn('Please fill in both username and community slug')
+      toast.error('Please fill in both username and community slug')
+      return
+    }
 
     setIsGenerating(true)
     setError(null)
@@ -30,13 +37,34 @@ export default function StatsGenerator() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || `HTTP ${response.status}`)
+
+        // Для серьезных API ошибок показываем Alert
+        if (response.status >= 500 || errorData.error?.includes('Service configuration')) {
+          setError(errorData.message || `Server error: ${response.status}`)
+          toast.error('Failed to generate stats')
+          return
+        }
+
+        // Для менее серьезных ошибок - toast
+        toast.error(errorData.message || `Request failed: ${response.status}`)
+        return
       }
 
-      const data: UserStatsData = await response.json()
-      setResult(data)
+      const responseData: GenerateStatsResponse = await response.json()
+
+      // Проверяем, есть ли предупреждение в ответе
+      if (responseData.warning) {
+        toast.warning(responseData.warning)
+      } else {
+        toast.success('Stats generated successfully!')
+      }
+
+      setResult(responseData.data)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error')
+      // Сетевые ошибки - показываем Alert
+      const errorMessage = err instanceof Error ? err.message : 'Network error occurred'
+      setError(errorMessage)
+      toast.error('Connection failed')
     } finally {
       setIsGenerating(false)
     }
@@ -63,10 +91,10 @@ export default function StatsGenerator() {
       </div>
 
       {error && (
-        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded">
-          <h3 className="font-bold text-destructive">Error:</h3>
-          <p className="text-destructive/80">{error}</p>
-        </div>
+        <Alert variant="destructive">
+          <AlertTitle>Generation Failed</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       {result && (

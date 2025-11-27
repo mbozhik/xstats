@@ -96,10 +96,15 @@ export async function POST(request: NextRequest) {
     }
 
     if (saveWarning) {
-      return NextResponse.json({...statsData, warning: saveWarning})
+      return NextResponse.json({
+        data: statsData,
+        warning: saveWarning,
+      })
     }
 
-    return NextResponse.json(statsData)
+    return NextResponse.json({
+      data: statsData,
+    })
   } catch (error) {
     console.error('Stats generation error:', error)
     return NextResponse.json(

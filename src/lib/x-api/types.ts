@@ -76,3 +76,8 @@ export interface GenerateStatsParams {
   username: string // X username without @
   communitySlug: string // community identifier
 }
+
+export interface GenerateStatsResponse {
+  data: UserStatsData
+  warning?: string
+}
