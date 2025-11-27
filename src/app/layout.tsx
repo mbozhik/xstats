@@ -9,6 +9,7 @@ import {ThemeProvider} from 'next-themes'
 import YandexMetrika from '~/global/analytics'
 
 import Header from '~/global/header'
+import Footer from '~/global/footer'
 import {Toaster} from '~/ui/sonner'
 
 export default function RootLayout({
@@ -18,11 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn([geistSans.variable, geistMono.variable], 'bg-background text-foreground', 'tracking-tight antialiased')}>
+      <body className={cn([geistSans.variable, geistMono.variable], 'min-h-screen flex flex-col', 'bg-background text-foreground', 'tracking-tight antialiased')}>
         <ConvexProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <Header />
             {children}
+            <Footer />
 
             <Toaster />
           </ThemeProvider>
