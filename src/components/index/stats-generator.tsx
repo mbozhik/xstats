@@ -1,85 +1,72 @@
 'use client'
 
-import type {UserStatsData, GenerateStatsResponse} from '@/lib/x-api/types'
+import {UserRound} from 'lucide-react'
+
+import {api} from '@convex/_generated/api'
 
 import {useCommunity} from '@/hooks/use-community'
+import {useDebounce} from '@/hooks/use-debounce'
+import {useStatsGeneration} from '@/hooks/use-stats-generation'
+import {cn, cleanXAvatarUrl} from '@/lib/utils'
 
 import {useState} from 'react'
-import {toast} from 'sonner'
+import {useQuery} from 'convex/react'
 
+import Image from 'next/image'
+import StatsCard from '~/index/stats-card'
 import {Alert, AlertTitle, AlertDescription} from '~/ui/alert'
 import {Skeleton} from '~/ui/skeleton'
 import {Spinner} from '~/ui/spinner'
+import {Card} from '~/ui/card'
+import {InputGroup, InputGroupAddon, InputGroupInput, InputGroupText} from '~/ui/input-group'
+import {Button} from '~/ui/button'
+import {H4, SMALL} from '~/ui/typography'
 
 export default function StatsGenerator() {
-  const {community, isLoading: communityLoading, error: communityError, isValid: communityValid} = useCommunity()
+  const {community, communityUsername, isLoading: communityLoading, error: communityError, isValid: communityValid} = useCommunity()
 
   const [username, setUsername] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [result, setResult] = useState<UserStatsData | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
-  const handleGenerate = async () => {
-    if (!username.trim()) {
-      console.warn('Please enter a username')
-      toast.error('Please enter a username')
-      return
-    }
+  const {
+    isGenerating,
+    isGeneratingImage,
+    result,
+    error,
+    handleGenerate: generateStats,
+    handleGenerateImage,
+  } = useStatsGeneration({
+    username,
+    communitySlug: community?.slug || '',
+    communityValid,
+  })
 
-    if (!communityValid) {
-      console.warn('Invalid or missing community')
-      toast.error(communityError || 'Invalid community')
-      return
-    }
+  // Debounce username input to avoid excessive API calls
+  const debouncedUsername = useDebounce(username.trim(), 700)
 
-    setIsGenerating(true)
-    setError(null)
-    setResult(null)
+  // Query user data from Convex only when debounced username changes
+  const userFromDb = useQuery(api.tables.users.getUserByUsername, debouncedUsername ? {username: debouncedUsername} : 'skip')
 
-    try {
-      const response = await fetch('/api/x', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          username: username.trim(),
-          communitySlug: community!.slug,
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-
-        // Для серьезных API ошибок показываем Alert
-        if (response.status >= 500 || errorData.error?.includes('Service configuration')) {
-          setError(errorData.message || `Server error: ${response.status}`)
-          toast.error('Failed to generate stats')
-          return
-        }
-
-        // Для менее серьезных ошибок - toast
-        toast.error(errorData.message || `Request failed: ${response.status}`)
-        return
+  // Determine user data for display
+  const userData = userFromDb
+    ? {
+        exists: true,
+        profileImage: cleanXAvatarUrl(userFromDb.avatar),
+        lastScraped: userFromDb.lastActivity ? new Date(userFromDb.lastActivity).toLocaleDateString() : undefined,
+        requestCount: userFromDb.requestCount,
+      }
+    : {
+        exists: false,
+        profileImage: undefined,
+        lastScraped: undefined,
+        requestCount: 0,
       }
 
-      const responseData: GenerateStatsResponse = await response.json()
+  // Show loading when user is typing (before debounce) or when query is loading
+  const isUserLoading = (username.trim() !== '' && debouncedUsername !== username.trim()) || (userFromDb === undefined && debouncedUsername !== '')
 
-      // Проверяем, есть ли предупреждение в ответе
-      if (responseData.warning) {
-        toast.warning(responseData.warning)
-      } else {
-        toast.success('Stats generated successfully!')
-      }
-
-      setResult(responseData.data)
-    } catch (err) {
-      // Сетевые ошибки - показываем Alert
-      const errorMessage = err instanceof Error ? err.message : 'Network error occurred'
-      setError(errorMessage)
-      toast.error('Connection failed')
-    } finally {
-      setIsGenerating(false)
-    }
-  }
+  // Use functions from the hook
+  const handleGenerate = () => generateStats()
+  const handleGenerateImageClick = () => handleGenerateImage()
 
   if (communityLoading) {
     return (
@@ -94,69 +81,122 @@ export default function StatsGenerator() {
   }
 
   return (
-    <section className="space-y-6">
-      <div className="space-y-4">
-        <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-foreground">Username</label>
-          <input type="text" placeholder="yuppibaladam" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-2 bg-background border border-input rounded text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none" />
+    <section data-section="stats-generator-index" className="space-y-6">
+      <div data-module="config-stats" className="space-y-4">
+        <div data-slot="input-config" className="flex sm:flex-col gap-2">
+          <InputGroup>
+            <InputGroupInput placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} className="flex-1 !pl-1 !pt-0.5 sm:!pt-0.75" />
+
+            <InputGroupAddon>
+              <InputGroupText>
+                x.com <span className="!-ml-1.75">/</span>
+              </InputGroupText>
+            </InputGroupAddon>
+          </InputGroup>
+
+          <Button onClick={handleGenerate} disabled={!username.trim() || !communityValid || isGenerating || communityLoading}>
+            {isGenerating ? 'Generating...' : 'Generate'}
+          </Button>
         </div>
 
-        <button onClick={handleGenerate} disabled={!username.trim() || !communityValid || isGenerating || communityLoading} className="w-full p-2 bg-primary text-primary-foreground rounded disabled:opacity-50 hover:bg-primary/90 transition-colors">
-          {isGenerating ? 'Generating...' : 'Generate Stats'}
-        </button>
+        {username && (
+          <div data-slot="output-config">
+            {isUserLoading ? (
+              <Card data-slot="card-output-generator-form" className="p-2 sm:p-1.5 pr-6 sm:pr-4">
+                <div className="flex items-center gap-2.75 sm:gap-2.5">
+                  <Skeleton className="size-12 sm:size-14" />
+
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-5 w-20" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                </div>
+              </Card>
+            ) : userData.exists ? (
+              <Card data-slot="card-output-generator-form" className="p-2 sm:p-1.5 pr-6 sm:pr-4 flex flex-row items-center justify-between">
+                <div className="flex items-center gap-2.75 sm:gap-2.5">
+                  <div className={cn(userData.profileImage ? '' : 'p-2', 'size-12 sm:size-14 rounded-lg overflow-hidden', 'grid place-items-center', 'bg-foreground/10 dark:bg-foreground/10')}>{userData.profileImage ? <Image quality={100} src={userData.profileImage} alt={`${username} profile`} width={500} height={500} className="size-full object-cover" /> : <UserRound className={cn('size-full', 'text-muted-foreground')} strokeWidth={1.5} />}</div>
+
+                  <div className="space-y-0.5">
+                    <H4 className="font-semibold">@{username}</H4>
+
+                    <SMALL className="text-muted-foreground">{userData.lastScraped ? `scraped ${userData.lastScraped} (${userData.requestCount} requests)` : 'not scraped yet'}</SMALL>
+                  </div>
+                </div>
+
+                {isGenerating && userData.exists && <Spinner className="size-6 text-muted-foreground" />}
+              </Card>
+            ) : null}
+          </div>
+        )}
       </div>
 
       {error && (
-        <Alert variant="destructive">
+        <Alert data-module="error-stats" variant="destructive">
           <AlertTitle>Generation Failed</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      {result && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold">Results</h2>
+      <SMALL data-module="status-stats" className="text-muted-foreground text-center">
+        {isGenerating
+          ? 'Generating your stats card...' // fetching
+          : result
+            ? 'Your Stats Card' // generated
+            : userData.exists
+              ? 'Click generate to create your stats card' // initial
+              : null}
+      </SMALL>
 
-          {/* User Info */}
-          <div className="p-4 rounded bg-card border">
-            <h3 className="mb-2 font-bold text-muted-foreground">User Info</h3>
+      {(result || isGenerating) && (
+        <div data-module="preview-stats" className="space-y-4">
+          <div className="text-center"></div>
 
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>ID: {result.user.id}</div>
-              <div>Username: @{result.user.username}</div>
-              <div>Name: {result.user.name}</div>
-              <div>Followers: {result.user.followersCount}</div>
-              <div>Requests: {result.user.requestCount}</div>
-              <div>Last Activity: {new Date(result.user.lastActivity).toLocaleString()}</div>
-            </div>
+          <div className="flex justify-center">
+            {isGenerating ? (
+              <div className="w-full max-w-2xl mx-auto bg-card border border-border rounded-lg px-8 py-10">
+                <div className="flex gap-24">
+                  {/* Left side skeleton */}
+                  <div className="flex-shrink-0 flex flex-col items-center justify-center">
+                    <Skeleton className="size-28 rounded-full mb-4" />
+                    <Skeleton className="h-6 w-16 mb-2" />
+                    <Skeleton className="h-4 w-20" />
+                  </div>
 
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {result.user.avatar && <img src={result.user.avatar} alt="Avatar" className="size-24 mt-2 rounded-full border" />}
-          </div>
-
-          {/* Raw Stats */}
-          <div className="p-4 rounded bg-muted border">
-            <h3 className="mb-2 font-bold text-muted-foreground">Raw Metrics</h3>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {Object.entries(result.stats.raw).map(([key, value]) => (
-                <div key={key}>
-                  {key}: {value}
+                  {/* Right side skeleton */}
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="grid grid-cols-2 gap-8">
+                      <Skeleton className="h-16 w-full" />
+                      <Skeleton className="h-16 w-full" />
+                      <Skeleton className="h-16 w-full" />
+                      <Skeleton className="h-16 w-full" />
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : result && community ? (
+              <StatsCard
+                userData={{
+                  ...result.user,
+                  avatar: cleanXAvatarUrl(result.user.avatar),
+                }}
+                stats={{
+                  ...result.stats.raw,
+                  impressions: result.stats.calculated.impressions,
+                  engagement: result.stats.calculated.engagement,
+                }}
+                referenceUsername={communityUsername || community.slug}
+              />
+            ) : null}
           </div>
 
-          {/* Calculated Stats */}
-          <div className="p-4 rounded bg-accent border">
-            <h3 className="mb-2 font-bold text-muted-foreground">Calculated Metrics</h3>
-            <div className="space-y-2 text-sm">
-              {Object.entries(result.stats.calculated).map(([key, value]) => (
-                <div key={key}>
-                  {key}: {value}
-                </div>
-              ))}
+          {result && !isGenerating && (
+            <div className="flex justify-center">
+              <Button onClick={handleGenerateImageClick} disabled={isGeneratingImage} className="min-w-48 sm:w-full">
+                {isGeneratingImage ? 'Generating Image...' : 'Download Image'}
+              </Button>
             </div>
-          </div>
+          )}
         </div>
       )}
     </section>
