@@ -178,7 +178,7 @@ export default function StatsGenerator() {
               <StatsCard
                 userData={{
                   ...result.user,
-                  avatar: cleanXAvatarUrl(result.user.avatar),
+                  avatar: cleanXAvatarUrl(result.user.avatar) || '',
                 }}
                 stats={{
                   ...result.stats.raw,
