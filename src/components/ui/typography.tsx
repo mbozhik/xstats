@@ -11,7 +11,7 @@ type Props = {
 export type Typo = keyof typeof TYPO_CLASSES
 
 export const TYPO_CLASSES = {
-  h1: 'text-2xl !leading-[1.1] font-semibold font-sans tracking-[-0.02em]',
+  h1: 'text-2xl !leading-[1.1] font-bold font-sans tracking-[-0.02em]',
   h4: 'text-base !leading-[1.2] font-semibold font-sans tracking-[-0.02em]',
   span: 'text-sm !leading-[1.2] font-mono',
   small: 'text-xs !leading-[1.3] font-mono',

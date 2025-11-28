@@ -14,11 +14,11 @@ const X_LINKS = {
 
 export default function Footer() {
   return (
-    <header className={cn(BOX.container, 'pt-10', 'flex items-center justify-center gap-1.5', 'group')}>
+    <footer className={cn(BOX.container, 'pt-10', 'flex items-center justify-center gap-1.5', 'group')}>
       <Box className="stroke-muted-foreground size-3.5 group-hover:stroke-foreground duration-300" />
 
       <SMALL className="text-muted-foreground">
-        build by{' '}
+        built by{' '}
         <Link href={X_LINKS.BOZZHIK} className="text-foreground border-b border-transparent hover:border-foreground duration-300">
           @bozzhik
         </Link>{' '}
@@ -27,6 +27,6 @@ export default function Footer() {
           @suitrcommunity
         </Link>
       </SMALL>
-    </header>
+    </footer>
   )
 }
