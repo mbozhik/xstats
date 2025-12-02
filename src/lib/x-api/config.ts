@@ -35,10 +35,7 @@ export const xApiProvider: XApiProvider = {
       method: 'GET',
       description: 'Search tweets by query',
       requiredParams: ['query'],
-      optionalParams: ['search_type'],
-      defaultParams: {
-        search_type: 'Top',
-      },
+      optionalParams: ['search_type', 'cursor'],
     },
   },
 }

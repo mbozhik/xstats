@@ -40,7 +40,8 @@ export interface XUserInfoParams {
 
 export interface XSearchTweetsParams {
   query: string
-  search_type?: 'Top' | 'Latest' | 'People' | 'Photos' | 'Videos'
+  search_type?: 'Top' | 'Latest' | 'Media' | 'People' | 'Lists' | 'rapid_do_not_include_in_request_key'
+  cursor?: string
 }
 
 // Final output structure matching Convex schema
