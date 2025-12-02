@@ -42,6 +42,7 @@ export function useCommunity() {
     communitySlug,
     community,
     communityUsername: community?.username,
+    communityName: community?.name,
     isLoading,
     error,
     isValid,

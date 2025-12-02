@@ -6,7 +6,7 @@ import Link from 'next/link'
 import {H1, SPAN} from '~/ui/typography'
 
 export default function Hero() {
-  const {communityUsername, isLoading, error, isValid} = useCommunity()
+  const {communityUsername, communityName, isLoading, error, isValid} = useCommunity()
 
   if (isLoading) {
     return (
@@ -33,7 +33,7 @@ export default function Hero() {
       <SPAN className="text-muted-foreground">
         Discover your X impact with{' '}
         <Link href={`https://x.com/${communityUsername}`} target="_blank" className="font-medium text-foreground border-b border-transparent hover:border-foreground duration-300" rel="noopener noreferrer">
-          @{communityUsername}
+          {communityName}
         </Link>
       </SPAN>
     </section>
