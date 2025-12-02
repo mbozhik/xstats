@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={cn([geistSans.variable, geistMono.variable], 'min-h-screen flex flex-col', 'bg-background text-foreground', 'tracking-tight antialiased')}>
         <ConvexProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
             <Header />
             {children}
             <Footer />
