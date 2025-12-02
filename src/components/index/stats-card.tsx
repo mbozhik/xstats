@@ -6,6 +6,7 @@ import {forwardRef} from 'react'
 
 import Image from 'next/image'
 import {Button} from '~/ui/button'
+import {Badge} from '~/ui/badge'
 
 type UserData = UserStatsData['user']
 type StatsData = UserStatsData['stats']['raw'] & UserStatsData['stats']['calculated']
@@ -57,10 +58,24 @@ export function VariantSelector({currentVariant, onVariantChange}: {currentVaria
 const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard({userData, stats, referenceUsername, variant, communityColors, isExport = false}, ref) {
   const colors = VARIANT_STYLES[variant](communityColors)
 
+  const brandedCommunity = referenceUsername === 'SuiTRCommunity'
+
   const formatStatNumber = (num: number) => {
+    if (num >= 1000000) {
+      // Миллионы: показываем 1 знак после запятой если < 10M, иначе без запятой
+      const value = num / 1000000
+      if (value < 10) {
+        return `${value.toFixed(1).replace('.0', '')}M`
+      }
+      return `${Math.round(value)}M`
+    }
     if (num >= 1000) {
-      const formatted = (num / 1000).toFixed(1).replace('.0', '')
-      return `${formatted}K`
+      // Тысячи: показываем 1 знак после запятой если < 100K, иначе без запятой
+      const value = num / 1000
+      if (value < 100) {
+        return `${value.toFixed(1).replace('.0', '')}K`
+      }
+      return `${Math.round(value)}K`
     }
     return num.toLocaleString('ru-RU').replace(/,/g, '.').replace(/\s/g, ' ')
   }
@@ -146,9 +161,15 @@ const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard(
                 {value: stats.impressions, label: 'Impressions'},
                 {value: stats.engagement, label: 'Engagement'},
               ].map((stat, index) => (
-                <div className="space-y-1" key={index}>
-                  <span className="block text-5xl font-bold tracking-tight text-nowrap" style={{color: colors.text}}>
+                <div className="space-y-1 relative" key={index}>
+                  <span className="relative block text-5xl font-bold tracking-tight text-nowrap" style={{color: colors.text}}>
                     {formatStatNumber(stat.value)}
+
+                    {stat.label === 'Engagement' && stats.engagementRate !== undefined && stats.engagementRate > 0 && (
+                      <Badge variant="secondary" className={cn('absolute -top-2 -right-1.5', 'px-1.25 py-0.25 text-xs', variant !== 'community' && 'ring-[0.5px] ring-white/15')} style={{backgroundColor: brandedCommunity && variant === 'community' ? `${colors.primary}` : `${colors.secondary}`, color: colors.text}}>
+                        {stats.engagementRate}%
+                      </Badge>
+                    )}
                   </span>
                   <span className="block text-lg font-medium text-muted-foreground" style={{color: `${colors.text}50`}}>
                     {stat.label}
@@ -170,7 +191,7 @@ const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard(
             <span className="font-medium lowercase">@{userData.username}</span>
             <span className="text-muted-foreground/70">×</span>
             <span className="font-medium lowercase">@{referenceUsername}</span>
-            <span style={{color: variant === 'community' ? `${colors.primary}95` : `${colors.text}95`}}>xstats</span>
+            <span style={{color: variant === 'community' ? (brandedCommunity ? `${colors.primary}95` : colors.text) : `${colors.text}95`}}>xstats</span>
           </div>
         </div>
       </div>

@@ -204,6 +204,7 @@ export default function StatsGenerator() {
                   ...result.stats.raw,
                   impressions: result.stats.calculated.impressions,
                   engagement: result.stats.calculated.engagement,
+                  engagementRate: result.stats.calculated.engagementRate,
                 }}
                 referenceUsername={communityUsername || community.slug}
                 communityColors={community.branding.colors}
@@ -222,6 +223,7 @@ export default function StatsGenerator() {
                     ...result.stats.raw,
                     impressions: result.stats.calculated.impressions,
                     engagement: result.stats.calculated.engagement,
+                    engagementRate: result.stats.calculated.engagementRate,
                   }}
                   referenceUsername={communityUsername || community.slug}
                   communityColors={community.branding.colors}

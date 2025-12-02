@@ -66,7 +66,8 @@ export interface UserStatsData {
     }
     calculated: {
       impressions: number // sum of views
-      engagement: number // weighted score: (replies × 3) + (quotes × 3) + (retweets × 1) + (likes × 0.5) + (bookmarks × 1)
+      engagement: number // weighted score: (replies × 3) + (quotes × 3) + (retweets × 2) + (likes × 0.5) + (bookmarks × 2)
+      engagementRate: number // engagement rate percentage: (engagement / impressions) × 100
     }
   }
 }

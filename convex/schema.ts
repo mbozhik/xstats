@@ -51,7 +51,8 @@ export default defineSchema({
     // Calculated Metrics
     calculated: v.object({
       impressions: v.number(), // total views across all analyzed tweets (sum of `views`)
-      engagement: v.number(), // weighted engagement score using all raw metrics: (replies × 3) + (quotes × 3) + (retweets × 1) + (likes × 0.5) + (bookmarks × 1)
+      engagement: v.number(), // weighted engagement score using all raw metrics: (replies × 3) + (quotes × 3) + (retweets × 2) + (likes × 0.5) + (bookmarks × 2)
+      engagementRate: v.optional(v.number()), // engagement rate percentage: (engagement / impressions) × 100
     }),
   }).index('by_user_community', ['userId', 'communityId']),
 })

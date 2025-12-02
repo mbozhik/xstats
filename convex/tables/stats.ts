@@ -18,6 +18,7 @@ export const createStats = mutation({
     calculated: v.object({
       impressions: v.number(),
       engagement: v.number(),
+      engagementRate: v.optional(v.number()),
     }),
   },
   handler: async (ctx, args) => {
