@@ -3,7 +3,7 @@
 import type {UserStatsData, GenerateStatsResponse} from '@/lib/x-api/types'
 
 import {useState} from 'react'
-import html2canvas from 'html2canvas-pro'
+import {useToPng} from '@hugocxl/react-to-image'
 import {toast} from 'sonner'
 
 interface UseStatsGenerationProps {
@@ -12,9 +12,38 @@ interface UseStatsGenerationProps {
   communityValid: boolean
 }
 
+export function useImageGeneration(result: UserStatsData | null) {
+  const [imageState, convertToPng, imageRef] = useToPng<HTMLDivElement>({
+    quality: 1.0,
+    backgroundColor: '#0A0A0A',
+    pixelRatio: 3,
+    onSuccess: (dataUrl) => {
+      if (!result) return
+      const a = document.createElement('a')
+      a.href = dataUrl
+      const now = new Date()
+      const dateStr = now.toISOString().slice(0, 19).replace(/:/g, '-').replace('T', '_')
+      a.download = `xstats-${result.user.username}-${dateStr}.png`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      toast.success('Image downloaded successfully!')
+    },
+    onError: (error) => {
+      console.error('Error generating image:', error)
+      toast.error('Failed to generate image')
+    },
+  })
+
+  return {
+    isGeneratingImage: imageState.isLoading,
+    imageRef,
+    handleGenerateImage: convertToPng,
+  }
+}
+
 export function useStatsGeneration({username, communitySlug, communityValid}: UseStatsGenerationProps) {
   const [isGenerating, setIsGenerating] = useState(false)
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false)
   const [result, setResult] = useState<UserStatsData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -74,72 +103,10 @@ export function useStatsGeneration({username, communitySlug, communityValid}: Us
     }
   }
 
-  const handleGenerateImage = async () => {
-    if (!result) return
-
-    setIsGeneratingImage(true)
-    try {
-      const cardElement = document.querySelector('[id="stats-card"]') as HTMLElement
-      if (!cardElement) return
-
-      // Создаем клон элемента с фиксированными размерами
-      const clonedElement = cardElement.cloneNode(true) as HTMLElement
-      clonedElement.style.width = '600px'
-      clonedElement.style.height = '300px'
-      clonedElement.style.maxWidth = '600px'
-      clonedElement.style.position = 'absolute'
-      clonedElement.style.left = '-9999px'
-      clonedElement.style.top = '-9999px'
-
-      // Вставляем клон в DOM для правильного рендеринга
-      document.body.appendChild(clonedElement)
-
-      // Ждем рендеринга
-      await new Promise((resolve) => setTimeout(resolve, 100))
-
-      const canvas = await html2canvas(clonedElement, {
-        backgroundColor: null,
-        scale: 2,
-        useCORS: true,
-        allowTaint: false,
-        width: 600,
-        height: 300,
-        windowWidth: 600,
-        windowHeight: 300,
-      })
-
-      // Удаляем клон
-      document.body.removeChild(clonedElement)
-
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.href = url
-          const now = new Date()
-          const dateStr = now.toISOString().slice(0, 19).replace(/:/g, '-').replace('T', '_')
-          a.download = `xstats-${result.user.username}-${dateStr}.png`
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-          URL.revokeObjectURL(url)
-          toast.success('Image downloaded successfully!')
-        }
-      }, 'image/png')
-    } catch (error) {
-      console.error('Error generating image:', error)
-      toast.error('Failed to generate image')
-    } finally {
-      setIsGeneratingImage(false)
-    }
-  }
-
   return {
     isGenerating,
-    isGeneratingImage,
     result,
     error,
     handleGenerate,
-    handleGenerateImage,
   }
 }

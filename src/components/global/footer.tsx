@@ -14,7 +14,7 @@ const X_LINKS = {
 
 export default function Footer() {
   return (
-    <footer className={cn(BOX.container, 'pt-10', 'flex items-center justify-center gap-1.5', 'group')}>
+    <footer className={cn(BOX.container, 'pt-10 sm:pt-16', 'flex items-center justify-center gap-1.5', 'group')}>
       <Box className="stroke-muted-foreground size-3.5 group-hover:stroke-foreground duration-300" />
 
       <SMALL className="text-muted-foreground">

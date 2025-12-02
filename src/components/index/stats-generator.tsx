@@ -2,18 +2,19 @@
 
 import {UserRound} from 'lucide-react'
 
+import type {CardVariant} from '~/index/stats-card'
 import {api} from '@convex/_generated/api'
 
 import {useCommunity} from '@/hooks/use-community'
 import {useDebounce} from '@/hooks/use-debounce'
-import {useStatsGeneration} from '@/hooks/use-stats-generation'
+import {useStatsGeneration, useImageGeneration} from '@/hooks/use-stats-generation'
 import {cn, cleanXAvatarUrl} from '@/lib/utils'
 
 import {useState} from 'react'
 import {useQuery} from 'convex/react'
 
 import Image from 'next/image'
-import StatsCard from '~/index/stats-card'
+import StatsCard, {VariantSelector} from '~/index/stats-card'
 import {Alert, AlertTitle, AlertDescription} from '~/ui/alert'
 import {Skeleton} from '~/ui/skeleton'
 import {Spinner} from '~/ui/spinner'
@@ -26,19 +27,20 @@ export default function StatsGenerator() {
   const {community, communityUsername, isLoading: communityLoading, error: communityError, isValid: communityValid} = useCommunity()
 
   const [username, setUsername] = useState('')
+  const [cardVariant, setCardVariant] = useState<CardVariant>('community')
 
   const {
     isGenerating,
-    isGeneratingImage,
     result,
     error,
     handleGenerate: generateStats,
-    handleGenerateImage,
   } = useStatsGeneration({
     username,
     communitySlug: community?.slug || '',
     communityValid,
   })
+
+  const {isGeneratingImage, imageRef, handleGenerateImage} = useImageGeneration(result)
 
   // Debounce username input to avoid excessive API calls
   const debouncedUsername = useDebounce(username.trim(), 700)
@@ -83,7 +85,7 @@ export default function StatsGenerator() {
   return (
     <section data-section="stats-generator-index" className="space-y-6">
       <div data-module="config-stats" className="space-y-4">
-        <div data-slot="input-config" className="flex sm:flex-col gap-2">
+        <div data-slot="input-config" className="flex gap-2 sm:flex-col">
           <InputGroup>
             <InputGroupInput placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} className="flex-1 !pl-1 !pt-0.5 sm:!pt-0.75" />
 
@@ -106,16 +108,16 @@ export default function StatsGenerator() {
                 <div className="flex items-center gap-2.75 sm:gap-2.5">
                   <Skeleton className="size-12 sm:size-14" />
 
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-5 w-20" />
-                    <Skeleton className="h-4 w-16" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="w-20 h-5" />
+                    <Skeleton className="w-16 h-4" />
                   </div>
                 </div>
               </Card>
             ) : userData.exists ? (
               <Card data-slot="card-output-generator-form" className="p-2 sm:p-1.5 pr-6 sm:pr-4 flex flex-row items-center justify-between">
                 <div className="flex items-center gap-2.75 sm:gap-2.5">
-                  <div className={cn(userData.profileImage ? '' : 'p-2', 'size-12 sm:size-14 rounded-lg overflow-hidden', 'grid place-items-center', 'bg-foreground/10 dark:bg-foreground/10')}>{userData.profileImage ? <Image quality={100} src={userData.profileImage} alt={`${username} profile`} width={500} height={500} className="size-full object-cover" /> : <UserRound className={cn('size-full', 'text-muted-foreground')} strokeWidth={1.5} />}</div>
+                  <div className={cn(userData.profileImage ? '' : 'p-2', 'size-12 sm:size-14 rounded-lg overflow-hidden', 'grid place-items-center', 'bg-foreground/10 dark:bg-foreground/10')}>{userData.profileImage ? <Image quality={100} src={userData.profileImage} alt={`${username} profile`} width={500} height={500} className="object-cover size-full" /> : <UserRound className={cn('size-full', 'text-muted-foreground')} strokeWidth={1.5} />}</div>
 
                   <div className="space-y-0.5">
                     <H4 className="font-semibold">@{username}</H4>
@@ -138,7 +140,7 @@ export default function StatsGenerator() {
         </Alert>
       )}
 
-      <SMALL data-module="status-stats" className="text-muted-foreground text-center">
+      <SMALL data-module="status-stats" className="text-center text-muted-foreground">
         {isGenerating
           ? 'Generating your stats card...' // fetching
           : result
@@ -149,50 +151,53 @@ export default function StatsGenerator() {
       </SMALL>
 
       {(result || isGenerating) && (
-        <div data-module="preview-stats" className="space-y-4">
+        <div data-module="preview-stats" className="space-y-4.5">
           <div className="text-center"></div>
 
-          <div className="flex justify-center">
-            {isGenerating ? (
-              <div className="w-full max-w-2xl mx-auto bg-card border border-border rounded-lg px-8 py-10">
-                <div className="flex gap-24">
-                  {/* Left side skeleton */}
-                  <div className="flex-shrink-0 flex flex-col items-center justify-center">
-                    <Skeleton className="size-28 rounded-full mb-4" />
-                    <Skeleton className="h-6 w-16 mb-2" />
-                    <Skeleton className="h-4 w-20" />
-                  </div>
+          {isGenerating ? (
+            <div className="w-full max-w-2xl px-8 py-10 mx-auto border rounded-lg bg-card border-border">
+              <div className="flex gap-24">
+                {/* Left side skeleton */}
+                <div className="flex flex-col items-center justify-center flex-shrink-0">
+                  <Skeleton className="mb-4 rounded-full size-28" />
+                  <Skeleton className="w-16 h-6 mb-2" />
+                  <Skeleton className="w-20 h-4" />
+                </div>
 
-                  {/* Right side skeleton */}
-                  <div className="flex-1 flex flex-col justify-center">
-                    <div className="grid grid-cols-2 gap-8">
-                      <Skeleton className="h-16 w-full" />
-                      <Skeleton className="h-16 w-full" />
-                      <Skeleton className="h-16 w-full" />
-                      <Skeleton className="h-16 w-full" />
-                    </div>
+                {/* Right side skeleton */}
+                <div className="flex flex-col justify-center flex-1">
+                  <div className="grid grid-cols-2 gap-8">
+                    <Skeleton className="w-full h-16" />
+                    <Skeleton className="w-full h-16" />
+                    <Skeleton className="w-full h-16" />
+                    <Skeleton className="w-full h-16" />
                   </div>
                 </div>
               </div>
-            ) : result && community ? (
-              <StatsCard
-                userData={{
-                  ...result.user,
-                  avatar: cleanXAvatarUrl(result.user.avatar) || '',
-                }}
-                stats={{
-                  ...result.stats.raw,
-                  impressions: result.stats.calculated.impressions,
-                  engagement: result.stats.calculated.engagement,
-                }}
-                referenceUsername={communityUsername || community.slug}
-              />
-            ) : null}
-          </div>
+            </div>
+          ) : result && community ? (
+            <StatsCard
+              ref={imageRef}
+              variant={cardVariant}
+              userData={{
+                ...result.user,
+                avatar: cleanXAvatarUrl(result.user.avatar) || '',
+              }}
+              stats={{
+                ...result.stats.raw,
+                impressions: result.stats.calculated.impressions,
+                engagement: result.stats.calculated.engagement,
+              }}
+              referenceUsername={communityUsername || community.slug}
+              communityColors={community.branding.colors}
+            />
+          ) : null}
 
           {result && !isGenerating && (
-            <div className="flex justify-center">
-              <Button onClick={handleGenerateImageClick} disabled={isGeneratingImage} className="min-w-48 sm:w-full">
+            <div className="flex items-center justify-between">
+              <VariantSelector currentVariant={cardVariant} onVariantChange={setCardVariant} />
+
+              <Button size="sm" className="min-w-48 sm:w-full" onClick={handleGenerateImageClick} disabled={isGeneratingImage}>
                 {isGeneratingImage ? 'Generating Image...' : 'Download Image'}
               </Button>
             </div>

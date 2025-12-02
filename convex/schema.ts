@@ -16,7 +16,10 @@ export default defineSchema({
 
   communities: defineTable({
     name: v.string(), // human-readable name (Pudgy Penguins)
-    branding: v.any(), // brand platform ({colors: [#000000, #CCCCCC, #4F3342], others: ...})
+    branding: v.object({
+      colors: v.array(v.string()), // brand colors (primary, secondary, text)
+      others: v.any(),
+    }),
     slug: v.string(), // URL-friendly identifier (pengu)
 
     id: v.string(), // X id
