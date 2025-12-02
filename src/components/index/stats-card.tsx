@@ -19,6 +19,7 @@ interface StatsCardProps {
   referenceUsername: string
   variant: CardVariant
   communityColors: string[]
+  isExport?: boolean
 }
 
 const VARIANT_STYLES = {
@@ -43,9 +44,9 @@ export function VariantSelector({currentVariant, onVariantChange}: {currentVaria
   const labels = {community: 'Community', 'x-style': 'X Style', unstyled: 'Unstyled'}
 
   return (
-    <div className="flex justify-center gap-1">
+    <div className="flex justify-center gap-1 sm:w-full">
       {VARIANTS.map((variant) => (
-        <Button key={variant} variant={currentVariant === variant ? 'outline' : 'ghost'} size="sm" className="px-2.25 duration-200 border border-transparent" onClick={() => onVariantChange(variant)}>
+        <Button key={variant} variant={currentVariant === variant ? 'outline' : 'ghost'} size="sm" className="px-2.25 sm:flex-1 sm:h-9 duration-200 border border-transparent" onClick={() => onVariantChange(variant)}>
           {labels[variant]}
         </Button>
       ))}
@@ -53,7 +54,7 @@ export function VariantSelector({currentVariant, onVariantChange}: {currentVaria
   )
 }
 
-const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard({userData, stats, referenceUsername, variant, communityColors}, ref) {
+const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard({userData, stats, referenceUsername, variant, communityColors, isExport = false}, ref) {
   const colors = VARIANT_STYLES[variant](communityColors)
 
   const formatStatNumber = (num: number) => {
@@ -69,7 +70,12 @@ const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard(
       <div
         ref={ref}
         id="stats-card"
-        className={cn('relative w-full mx-auto', 'flex flex-col', 'bg-transparent border border-border shadow-lg rounded-xl overflow-hidden')}
+        className={cn(
+          'relative flex flex-col bg-background border border-border shadow-lg rounded-xl overflow-hidden',
+          isExport
+            ? 'w-[600px] h-[300px]' // export size
+            : 'w-full mx-auto',
+        )}
         style={{
           background: `linear-gradient(150deg, ${colors.secondary} 20%, ${colors.primary}30 100%)`,
           fontFamily: 'system-ui, -apple-system, sans-serif',
@@ -80,15 +86,37 @@ const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard(
           <div className="absolute bottom-[-20%] left-[-20%] size-[200px]" style={{background: `radial-gradient(circle, ${colors.primary} 0%, transparent 50%)`, filter: 'blur(100px)', opacity: 0.4}} />
         </div>
 
-        <div className={cn('px-6 pt-10 pb-9', 'flex-1', 'grid grid-cols-10', 'relative z-10')}>
+        <div
+          className={cn(
+            'flex-1 relative z-10',
+            isExport
+              ? 'px-6 pt-10 pb-9 grid grid-cols-10' // desktop layout for export
+              : 'px-6 pt-10 pb-9 sm:p-6 grid grid-cols-10 sm:flex sm:flex-col sm:gap-4', // responsive for preview
+          )}
+        >
           {/* Left side - Profile */}
-          <div className="flex flex-col items-center self-center justify-center flex-shrink-0 col-span-3 gap-4">
-            <div className="overflow-hidden border-4 border-transparent rounded-full size-28 outline-4 outline-offset-1" style={{outlineColor: `${colors.text}20`}}>
+          <div
+            className={cn(
+              'flex flex-col items-center self-center justify-center flex-shrink-0 gap-4',
+              isExport
+                ? 'col-span-3' // desktop layout
+                : 'col-span-3 sm:gap-2.5', // responsive
+            )}
+          >
+            <div
+              className={cn(
+                'overflow-hidden border-4 border-transparent rounded-full outline-4 outline-offset-1',
+                isExport
+                  ? 'size-28' // desktop size
+                  : 'size-28 sm:size-24', // responsive
+              )}
+              style={{outlineColor: `${colors.text}20`}}
+            >
               {userData.avatar ? (
                 <Image src={userData.avatar} alt={`${userData.name} avatar`} width={112} height={112} className="object-cover w-full h-full" />
               ) : (
                 <div className="flex items-center justify-center w-full h-full bg-muted" style={{backgroundColor: `${colors.text}10`}}>
-                  <span className="text-3xl font-bold text-muted-foreground" style={{color: colors.text}}>
+                  <span className="text-3xl sm:text-2xl font-bold text-muted-foreground" style={{color: colors.text}}>
                     {userData.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -96,7 +124,7 @@ const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard(
             </div>
 
             {/* User info */}
-            <div className="flex flex-col gap-0 text-center">
+            <div className="flex flex-col text-center">
               <span className="text-2xl font-bold" style={{color: colors.text}}>
                 {userData.name}
               </span>
@@ -107,9 +135,10 @@ const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard(
           </div>
 
           <div className="col-span-1"></div>
+          {/* {isExport ? null : <div className="col-span-1"></div>} */}
 
           {/* Right side - Stats */}
-          <div className="flex flex-col justify-center flex-1 col-span-6">
+          <div className={cn('flex flex-col justify-center flex-1', isExport ? 'col-span-6' : 'col-span-6')}>
             <div className="grid grid-cols-2 gap-x-8 gap-y-6">
               {[
                 {value: userData.followersCount, label: 'Followers'},

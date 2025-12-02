@@ -8,7 +8,7 @@ import {api} from '@convex/_generated/api'
 import {useCommunity} from '@/hooks/use-community'
 import {useDebounce} from '@/hooks/use-debounce'
 import {useStatsGeneration, useImageGeneration} from '@/hooks/use-stats-generation'
-import {cn, cleanXAvatarUrl} from '@/lib/utils'
+import {cn, cleanXAvatarUrl, getTimeAgo} from '@/lib/utils'
 
 import {useState} from 'react'
 import {useQuery} from 'convex/react'
@@ -53,7 +53,7 @@ export default function StatsGenerator() {
     ? {
         exists: true,
         profileImage: cleanXAvatarUrl(userFromDb.avatar),
-        lastScraped: userFromDb.lastActivity ? new Date(userFromDb.lastActivity).toLocaleDateString() : undefined,
+        lastScraped: userFromDb.lastActivity || undefined,
         requestCount: userFromDb.requestCount,
       }
     : {
@@ -87,7 +87,7 @@ export default function StatsGenerator() {
       <div data-module="config-stats" className="space-y-4">
         <div data-slot="input-config" className="flex gap-2 sm:flex-col">
           <InputGroup>
-            <InputGroupInput placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} className="flex-1 !pl-1 !pt-0.5 sm:!pt-0.75" />
+            <InputGroupInput placeholder="username" value={username} onChange={(e) => setUsername(e.target.value.replace('@', ''))} className="flex-1 !pl-1 !pt-0.5 sm:!pt-0.75" />
 
             <InputGroupAddon>
               <InputGroupText>
@@ -114,7 +114,7 @@ export default function StatsGenerator() {
                   </div>
                 </div>
               </Card>
-            ) : userData.exists ? (
+            ) : (
               <Card data-slot="card-output-generator-form" className="p-2 sm:p-1.5 pr-6 sm:pr-4 flex flex-row items-center justify-between">
                 <div className="flex items-center gap-2.75 sm:gap-2.5">
                   <div className={cn(userData.profileImage ? '' : 'p-2', 'size-12 sm:size-14 rounded-lg overflow-hidden', 'grid place-items-center', 'bg-foreground/10 dark:bg-foreground/10')}>{userData.profileImage ? <Image quality={100} src={userData.profileImage} alt={`${username} profile`} width={500} height={500} className="object-cover size-full" /> : <UserRound className={cn('size-full', 'text-muted-foreground')} strokeWidth={1.5} />}</div>
@@ -122,13 +122,13 @@ export default function StatsGenerator() {
                   <div className="space-y-0.5">
                     <H4 className="font-semibold">@{username}</H4>
 
-                    <SMALL className="text-muted-foreground">{userData.lastScraped ? `scraped ${userData.lastScraped} (${userData.requestCount} requests)` : 'not scraped yet'}</SMALL>
+                    <SMALL className="text-muted-foreground">{userData.exists ? (userData.lastScraped ? `Last analyzed ${getTimeAgo(userData.lastScraped)} (${userData.requestCount})` : 'Data collection running...') : 'Profile not indexed'}</SMALL>
                   </div>
                 </div>
 
                 {isGenerating && userData.exists && <Spinner className="size-6 text-muted-foreground" />}
               </Card>
-            ) : null}
+            )}
           </div>
         )}
       </div>
@@ -155,49 +155,87 @@ export default function StatsGenerator() {
           <div className="text-center"></div>
 
           {isGenerating ? (
-            <div className="w-full max-w-2xl px-8 py-10 mx-auto border rounded-lg bg-card border-border">
-              <div className="flex gap-24">
-                {/* Left side skeleton */}
-                <div className="flex flex-col items-center justify-center flex-shrink-0">
-                  <Skeleton className="mb-4 rounded-full size-28" />
-                  <Skeleton className="w-16 h-6 mb-2" />
-                  <Skeleton className="w-20 h-4" />
+            <div className="w-full max-w-2xl mx-auto border rounded-xl bg-card border-border overflow-hidden">
+              <div className="px-6 pt-10 pb-9 sm:p-6 flex-1 grid grid-cols-10 relative sm:flex sm:flex-col sm:gap-4">
+                {/* Left side skeleton - Profile */}
+                <div className="flex flex-col items-center self-center justify-center flex-shrink-0 col-span-3 gap-4 sm:gap-2.5">
+                  <Skeleton className="rounded-full size-28 sm:size-24" />
+                  <div className="flex flex-col gap-0 text-center">
+                    <Skeleton className="w-16 h-6 mb-1 mx-auto" />
+                    <Skeleton className="w-20 h-4 mx-auto" />
+                  </div>
                 </div>
 
-                {/* Right side skeleton */}
-                <div className="flex flex-col justify-center flex-1">
-                  <div className="grid grid-cols-2 gap-8">
-                    <Skeleton className="w-full h-16" />
-                    <Skeleton className="w-full h-16" />
-                    <Skeleton className="w-full h-16" />
-                    <Skeleton className="w-full h-16" />
+                <div className="col-span-1"></div>
+
+                {/* Right side skeleton - Stats */}
+                <div className="flex flex-col justify-center flex-1 col-span-6">
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+                    {Array.from({length: 4}).map((_, index) => (
+                      <div key={index} className="space-y-1">
+                        <Skeleton className="w-full h-10" />
+                        <Skeleton className="w-12 h-4" />
+                      </div>
+                    ))}
                   </div>
+                </div>
+              </div>
+
+              {/* Footer skeleton */}
+              <div className="py-2 border-t bg-muted/50">
+                <div className="flex items-center justify-center gap-1 text-sm text-center">
+                  <Skeleton className="w-12 h-4" />
+                  <Skeleton className="w-4 h-4" />
+                  <Skeleton className="w-12 h-4" />
+                  <Skeleton className="w-16 h-4" />
                 </div>
               </div>
             </div>
           ) : result && community ? (
-            <StatsCard
-              ref={imageRef}
-              variant={cardVariant}
-              userData={{
-                ...result.user,
-                avatar: cleanXAvatarUrl(result.user.avatar) || '',
-              }}
-              stats={{
-                ...result.stats.raw,
-                impressions: result.stats.calculated.impressions,
-                engagement: result.stats.calculated.engagement,
-              }}
-              referenceUsername={communityUsername || community.slug}
-              communityColors={community.branding.colors}
-            />
+            <>
+              {/* Visible preview card */}
+              <StatsCard
+                variant={cardVariant}
+                userData={{
+                  ...result.user,
+                  avatar: cleanXAvatarUrl(result.user.avatar) || '',
+                }}
+                stats={{
+                  ...result.stats.raw,
+                  impressions: result.stats.calculated.impressions,
+                  engagement: result.stats.calculated.engagement,
+                }}
+                referenceUsername={communityUsername || community.slug}
+                communityColors={community.branding.colors}
+              />
+
+              {/* Hidden export card with fixed dimensions */}
+              <div className="sr-only">
+                <StatsCard
+                  ref={imageRef}
+                  variant={cardVariant}
+                  userData={{
+                    ...result.user,
+                    avatar: cleanXAvatarUrl(result.user.avatar) || '',
+                  }}
+                  stats={{
+                    ...result.stats.raw,
+                    impressions: result.stats.calculated.impressions,
+                    engagement: result.stats.calculated.engagement,
+                  }}
+                  referenceUsername={communityUsername || community.slug}
+                  communityColors={community.branding.colors}
+                  isExport={true}
+                />
+              </div>
+            </>
           ) : null}
 
           {result && !isGenerating && (
-            <div className="flex items-center justify-between">
+            <div className="flex sm:flex-col items-center justify-between sm:gap-3">
               <VariantSelector currentVariant={cardVariant} onVariantChange={setCardVariant} />
 
-              <Button size="sm" className="min-w-48 sm:w-full" onClick={handleGenerateImageClick} disabled={isGeneratingImage}>
+              <Button size="sm" className="min-w-48 sm:h-9 sm:w-full" onClick={handleGenerateImageClick} disabled={isGeneratingImage}>
                 {isGeneratingImage ? 'Generating Image...' : 'Download Image'}
               </Button>
             </div>
