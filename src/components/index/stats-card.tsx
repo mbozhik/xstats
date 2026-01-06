@@ -1,3 +1,5 @@
+import SuiTrCommunityLogo from '$/sui-tr-community.png'
+
 import type {UserStatsData} from '@/lib/x-api/types'
 
 import {cn} from '@/lib/utils'
@@ -99,6 +101,12 @@ const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(function StatsCard(
         <div className="absolute inset-0 w-full h-full rounded-lg pointer-events-none">
           <div className="absolute top-[-35%] right-[10%] size-[150px]" style={{background: `radial-gradient(circle, ${colors.primary} 0%, transparent 50%)`, filter: 'blur(100px)', opacity: 0.4}} />
           <div className="absolute bottom-[-20%] left-[-20%] size-[200px]" style={{background: `radial-gradient(circle, ${colors.primary} 0%, transparent 50%)`, filter: 'blur(100px)', opacity: 0.4}} />
+
+          {brandedCommunity && (
+            <div className="absolute -top-7 -right-9 -rotate-25 size-38 opacity-5 saturate-0 pointer-events-none">
+              <Image src={SuiTrCommunityLogo} alt="SuiTR Community" fill className="object-contain" />
+            </div>
+          )}
         </div>
 
         <div
