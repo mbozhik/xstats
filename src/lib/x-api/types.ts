@@ -84,4 +84,5 @@ export interface GenerateStatsParams {
 export interface GenerateStatsResponse {
   data: UserStatsData
   warning?: string
+  source?: 'cache' | 'fresh' | 'rate_limited_cache' | 'rate_limited_blocked'
 }
