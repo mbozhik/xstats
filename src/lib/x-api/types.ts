@@ -44,6 +44,8 @@ export interface XSearchTweetsParams {
   cursor?: string
 }
 
+export type XSearchTweetsParamsSearchType = XSearchTweetsParams['search_type']
+
 // Final output structure matching Convex schema
 export interface UserStatsData {
   user: {

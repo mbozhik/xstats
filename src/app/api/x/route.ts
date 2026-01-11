@@ -1,8 +1,12 @@
 import {NextRequest, NextResponse} from 'next/server'
+
+import type {GenerateStatsParams, UserStatsData, XUserInfoResponse, XSearchResponse, XTweetData, XSearchTweetsParamsSearchType} from '@/lib/x-api/types'
 import {xApiProvider, LITE_MODE} from '@/lib/x-api/config'
-import type {GenerateStatsParams, UserStatsData, XUserInfoResponse, XSearchResponse, XTweetData} from '@/lib/x-api/types'
+
 import {ConvexHttpClient} from 'convex/browser'
 import {api} from '@convex/_generated/api'
+
+const DETAILED_LOGGING: boolean = false
 
 interface SearchMetrics {
   query: string
@@ -32,6 +36,13 @@ const ENGAGEMENT_WEIGHTS = {
 const USERNAME_REGEX = /^[a-zA-Z0-9_]{1,15}$/ // X/Twitter username: 1-15 chars, letters, numbers, underscores only
 const COMMUNITY_SLUG_REGEX = /^[a-z0-9-]+$/ // Community slug: lowercase letters, numbers, hyphens for URL-friendly format
 
+// Extended tweet interface for actual API responses (may differ from declared types)
+interface ExtendedTweetData extends XTweetData {
+  id?: string
+  text?: string
+  created_at?: string
+}
+
 // Helper function to get date one year ago in YYYY-MM-DD format
 function getOneYearAgoDate(): string {
   const date = new Date()
@@ -40,14 +51,26 @@ function getOneYearAgoDate(): string {
 }
 
 export async function POST(request: NextRequest) {
-  console.log(`🔄 X API Request - Mode: ${LITE_MODE ? 'LITE' : 'FULL'}`)
+  const requestId = Math.random().toString(36).substring(7)
+  console.log(`🔄 X API Request - Mode: ${LITE_MODE ? 'LITE' : 'FULL'} - Request ID: ${requestId} – ${DETAILED_LOGGING ? '🛠️' : '👁️'}`)
 
   try {
     const body = (await request.json()) as GenerateStatsParams
     const {username, communitySlug} = body
 
+    if (DETAILED_LOGGING) {
+      console.log(`📋 Request Parameters - Request ID: ${requestId}`, {
+        username,
+        communitySlug,
+        timestamp: new Date().toISOString(),
+      })
+    }
+
     // Validate that X API key is configured
     if (!process.env.X_RAPIDAPI_KEY) {
+      if (DETAILED_LOGGING) {
+        console.error(`❌ API Key Missing - Request ID: ${requestId}`)
+      }
       return NextResponse.json(
         {
           error: 'Service configuration error',
@@ -59,6 +82,9 @@ export async function POST(request: NextRequest) {
     }
 
     if (!username || !communitySlug) {
+      if (DETAILED_LOGGING) {
+        console.warn(`⚠️ Missing Parameters - Request ID: ${requestId}`, {username, communitySlug})
+      }
       return NextResponse.json(
         {
           error: 'Missing required parameters',
@@ -108,40 +134,103 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user info
-    const userInfo = await fetchUserInfo(username)
-
-    // Get community configuration (this would come from your database)
-    // For now, using hardcoded example - you should fetch from Convex
-    const communityTargets = await getCommunityTargets(communitySlug)
-
-    // Search for user's tweets involving community targets
-    const searchResult = await searchUserTweets(username, communityTargets)
-    const tweetsData = searchResult.data
-
-    // Calculate metrics
-    const statsData = await calculateStats(username, userInfo, tweetsData)
-
-    // Save data to Convex
-    let saveWarning: string | null = null
-    try {
-      await saveToConvex(statsData, communitySlug)
-    } catch (convexError) {
-      console.error('Failed to save to Convex:', convexError)
-      saveWarning = 'Warning: Stats generated but failed to save to database.'
+    if (DETAILED_LOGGING) {
+      console.log(`👤 Fetching user info - Request ID: ${requestId}`, {username})
     }
-
-    if (saveWarning) {
-      return NextResponse.json({
-        data: statsData,
-        warning: saveWarning,
+    const userInfo = await fetchUserInfo(username)
+    if (DETAILED_LOGGING) {
+      console.log(`✅ User info fetched - Request ID: ${requestId}`, {
+        userId: userInfo.id,
+        username: userInfo.profile,
+        followersCount: userInfo.sub_count,
+        friends: userInfo.friends,
+        blue_verified: userInfo.blue_verified,
       })
     }
 
-    return NextResponse.json({
-      data: statsData,
-    })
+    // Get community configuration (this would come from your database)
+    // For now, using hardcoded example - you should fetch from Convex
+    if (DETAILED_LOGGING) {
+      console.log(`🏘️ Fetching community targets - Request ID: ${requestId}`, {communitySlug})
+    }
+    const communityTargets = await getCommunityTargets(communitySlug)
+    if (DETAILED_LOGGING) {
+      console.log(`✅ Community targets fetched - Request ID: ${requestId}`, communityTargets)
+    }
+
+    // Search for user's tweets involving community targets
+    if (DETAILED_LOGGING) {
+      console.log(`🔍 Starting tweet search - Request ID: ${requestId}`, {
+        username,
+        targets: communityTargets,
+        liteMode: LITE_MODE,
+      })
+    }
+    const searchResult = await searchUserTweets(username, communityTargets, requestId)
+    const tweetsData = searchResult.data
+    if (DETAILED_LOGGING) {
+      console.log(`✅ Tweet search completed - Request ID: ${requestId}`, {
+        tweetsFound: tweetsData.timeline?.length || 0,
+        searchMetrics: searchResult.metrics,
+      })
+    }
+
+    // Calculate metrics
+    if (DETAILED_LOGGING) {
+      console.log(`📊 Calculating stats - Request ID: ${requestId}`, {
+        tweetsCount: tweetsData.timeline?.length || 0,
+      })
+    }
+    const statsData = await calculateStats(username, userInfo, tweetsData, requestId)
+    if (DETAILED_LOGGING) {
+      console.log(`✅ Stats calculated - Request ID: ${requestId}`, {
+        user: {
+          id: statsData.user.id,
+          username: statsData.user.username,
+          followersCount: statsData.user.followersCount,
+          requestCount: statsData.user.requestCount,
+        },
+        stats: statsData.stats,
+      })
+    }
+
+    // Save data to Convex
+    if (DETAILED_LOGGING) {
+      console.log(`💾 Saving to database - Request ID: ${requestId}`)
+    }
+    let saveWarning: string | null = null
+    try {
+      await saveToConvex(statsData, communitySlug)
+      if (DETAILED_LOGGING) {
+        console.log(`✅ Successfully saved to database - Request ID: ${requestId}`)
+      }
+    } catch (convexError) {
+      if (DETAILED_LOGGING) {
+        console.error(`❌ Failed to save to Convex - Request ID: ${requestId}:`, convexError)
+      }
+      saveWarning = 'Warning: Stats generated but failed to save to database.'
+    }
+
+    const responseData = saveWarning ? {data: statsData, warning: saveWarning} : {data: statsData}
+
+    if (DETAILED_LOGGING) {
+      console.log(`📤 Sending response - Request ID: ${requestId}`, {
+        hasWarning: Boolean(saveWarning),
+        userId: statsData.user.id,
+        tweetsProcessed: statsData.stats.raw.tweets,
+        impressions: statsData.stats.calculated.impressions,
+        engagement: statsData.stats.calculated.engagement,
+        engagementRate: statsData.stats.calculated.engagementRate,
+      })
+    }
+
+    if (saveWarning) {
+      return NextResponse.json(responseData)
+    }
+
+    return NextResponse.json(responseData)
   } catch (error) {
-    console.error('Stats generation error:', error)
+    console.error(`💥 Stats generation error${DETAILED_LOGGING ? ` - Request ID: ${requestId}` : ''}:`, error)
 
     // Determine appropriate status code based on error type
     let statusCode = 500
@@ -160,6 +249,22 @@ export async function POST(request: NextRequest) {
       } else if (error.message.includes('Access') || error.message.includes('forbidden')) {
         statusCode = 403
       }
+
+      if (DETAILED_LOGGING) {
+        console.error(`🚨 Error details - Request ID: ${requestId}`, {
+          errorType: error.constructor.name,
+          message: error.message,
+          statusCode,
+          stack: error.stack?.split('\n').slice(0, 5).join('\n'), // First 5 lines of stack
+        })
+      }
+    } else {
+      if (DETAILED_LOGGING) {
+        console.error(`🚨 Non-Error object thrown - Request ID: ${requestId}`, {
+          errorType: typeof error,
+          errorValue: String(error),
+        })
+      }
     }
 
     return NextResponse.json(
@@ -167,6 +272,7 @@ export async function POST(request: NextRequest) {
         error: 'Failed to generate stats',
         message: errorMessage,
         timestamp: new Date().toISOString(),
+        requestId, // Include request ID in error response for easier debugging
       },
       {status: statusCode},
     )
@@ -298,7 +404,7 @@ async function getCommunityTargets(communitySlug: string) {
   }
 }
 
-async function searchUserTweets(username: string, targets: {username: string; hashtag: string; cashtag: string}): Promise<{data: XSearchResponse; metrics: SearchMetrics}> {
+async function searchUserTweets(username: string, targets: {username: string; hashtag: string; cashtag: string}, requestId: string): Promise<{data: XSearchResponse; metrics: SearchMetrics}> {
   const startTime = Date.now()
   let apiCalls = 0
   const cacheHit = false
@@ -353,7 +459,7 @@ async function searchUserTweets(username: string, targets: {username: string; ha
       const endpoint = xApiProvider.endpoints.searchTweets
       const url = new URL(endpoint.path, xApiProvider.baseUrl)
       url.searchParams.set('query', query)
-      url.searchParams.set('search_type', 'Top')
+      url.searchParams.set('search_type', 'Top' as NonNullable<XSearchTweetsParamsSearchType>)
 
       if (cursor) {
         url.searchParams.set('cursor', cursor)
@@ -401,9 +507,35 @@ async function searchUserTweets(username: string, targets: {username: string; ha
 
       const data = await response.json()
 
+      if (DETAILED_LOGGING) {
+        console.log(`📄 Search page ${apiCalls} - Request ID: ${requestId}`, {
+          tweetsInPage: data.timeline?.length || 0,
+          hasNextCursor: Boolean(data.next_cursor),
+          totalTweetsSoFar: allTweets.length,
+        })
+      }
+
       // Добавляем твиты из текущей страницы
       if (data.timeline && Array.isArray(data.timeline)) {
         allTweets.push(...data.timeline)
+
+        // Логируем детали твитов для дебага (первые 3 твита страницы)
+        if (DETAILED_LOGGING && data.timeline.length > 0) {
+          console.log(
+            `📝 Sample tweets from page ${apiCalls} - Request ID: ${requestId}`,
+            (data.timeline.slice(0, 3) as ExtendedTweetData[]).map((tweet: ExtendedTweetData) => ({
+              id: tweet.id,
+              text: tweet.text ? tweet.text.substring(0, 100) + (tweet.text.length > 100 ? '...' : '') : '',
+              views: tweet.views,
+              replies: tweet.replies,
+              retweets: tweet.retweets,
+              favorites: tweet.favorites,
+              quotes: tweet.quotes,
+              bookmarks: tweet.bookmarks,
+              created_at: tweet.created_at,
+            })),
+          )
+        }
       }
 
       // Проверяем, есть ли следующая страница
@@ -457,7 +589,7 @@ async function searchUserTweets(username: string, targets: {username: string; ha
   }
 }
 
-async function calculateStats(username: string, userInfo: XUserInfoResponse, tweetsData: XSearchResponse): Promise<UserStatsData> {
+async function calculateStats(username: string, userInfo: XUserInfoResponse, tweetsData: XSearchResponse, requestId: string): Promise<UserStatsData> {
   try {
     // Check if user exists to determine requestCount
     let existingUser
@@ -474,8 +606,8 @@ async function calculateStats(username: string, userInfo: XUserInfoResponse, twe
     }
 
     // Aggregate metrics from all tweets with error handling
-    const metrics = tweetsData.timeline.reduce(
-      (acc, tweet) => {
+    const metrics = (tweetsData.timeline as ExtendedTweetData[]).reduce(
+      (acc: {tweets: number; views: number; replies: number; retweets: number; likes: number; quotes: number; bookmarks: number}, tweet: ExtendedTweetData) => {
         try {
           return {
             tweets: acc.tweets + 1,
@@ -487,18 +619,32 @@ async function calculateStats(username: string, userInfo: XUserInfoResponse, twe
             bookmarks: acc.bookmarks + (tweet.bookmarks || 0),
           }
         } catch (tweetError) {
-          console.warn('Error processing tweet:', tweetError, tweet)
+          if (DETAILED_LOGGING) {
+            console.warn(`Error processing tweet - Request ID: ${requestId}:`, tweetError, tweet)
+          }
           return acc // Skip malformed tweet
         }
       },
       {tweets: 0, views: 0, replies: 0, retweets: 0, likes: 0, quotes: 0, bookmarks: 0},
     )
 
+    if (DETAILED_LOGGING) {
+      console.log(`📈 Raw metrics aggregated - Request ID: ${requestId}`, metrics)
+    }
+
     // Calculate engagement score using predefined weights
     const engagementScore = metrics.replies * ENGAGEMENT_WEIGHTS.replies + metrics.quotes * ENGAGEMENT_WEIGHTS.quotes + metrics.retweets * ENGAGEMENT_WEIGHTS.retweets + metrics.likes * ENGAGEMENT_WEIGHTS.likes + metrics.bookmarks * ENGAGEMENT_WEIGHTS.bookmarks
 
     // Calculate engagement rate (percentage)
     const engagementRate = metrics.views > 0 ? (engagementScore / metrics.views) * 100 : 0
+
+    if (DETAILED_LOGGING) {
+      console.log(`🎯 Engagement calculations - Request ID: ${requestId}`, {
+        engagementScore,
+        engagementRate,
+        weights: ENGAGEMENT_WEIGHTS,
+      })
+    }
 
     return {
       user: {
