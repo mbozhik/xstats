@@ -1,0 +1,322 @@
+🔄 X API Request - Mode: FULL - Request ID: 71rqoyd
+📋 Request Parameters - Request ID: 71rqoyd {
+  username: 'yuppibaladam',
+  communitySlug: 'sui-tr-community',
+  timestamp: '2026-01-11T13:09:41.044Z'
+}
+👤 Fetching user info - Request ID: 71rqoyd { username: 'yuppibaladam' }
+✅ User info fetched - Request ID: 71rqoyd {
+  userId: '1269049020841897985',
+  username: 'yuppibaladam',
+  followersCount: 9832,
+  friends: 1833,
+  blue_verified: true
+}
+🏘️ Fetching community targets - Request ID: 71rqoyd { communitySlug: 'sui-tr-community' }
+✅ Community targets fetched - Request ID: 71rqoyd { username: 'SuiTRCommunity', hashtag: 'SUI', cashtag: 'SUI' }
+🔍 Starting tweet search - Request ID: 71rqoyd {
+  username: 'yuppibaladam',
+  targets: { username: 'SuiTRCommunity', hashtag: 'SUI', cashtag: 'SUI' },
+  liteMode: false
+}
+📄 Search page 1 - Request ID: 71rqoyd { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 0 }
+📝 Sample tweets from page 1 - Request ID: 71rqoyd [
+  {
+    id: undefined,
+    text: 'I bought some IKA today. (NFA DYOR)\n' +
+      '\n' +
+      'I believe in their tech, in what they’re trying to build, and i...',
+    views: '8735',
+    replies: 27,
+    retweets: 9,
+    favorites: 156,
+    quotes: 2,
+    bookmarks: 6,
+    created_at: 'Fri Nov 14 14:19:51 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Our AEON proposal received a green light from the @SuiNSdapp team✅ \n' +
+      '\n' +
+      '@AeonCommunity brings the cultu...',
+    views: '5762',
+    replies: 37,
+    retweets: 15,
+    favorites: 122,
+    quotes: 2,
+    bookmarks: 6,
+    created_at: 'Thu Nov 13 14:26:16 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Gm from @SolanaConf https://t.co/NVNwdIXUE6',
+    views: '2732',
+    replies: 28,
+    retweets: 6,
+    favorites: 112,
+    quotes: 0,
+    bookmarks: 5,
+    created_at: 'Wed Dec 10 13:09:52 +0000 2025'
+  }
+]
+📄 Search page 2 - Request ID: 71rqoyd { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 20 }
+📝 Sample tweets from page 2 - Request ID: 71rqoyd [
+  {
+    id: undefined,
+    text: '🚨New stamp alert🚨\n' +
+      '\n' +
+      'Yoo $Sui fam, new stamp just dropped go claim it before it’s gone! \n' +
+      '\n' +
+      '🔗 https:/...',
+    views: '8330',
+    replies: 20,
+    retweets: 29,
+    favorites: 156,
+    quotes: 0,
+    bookmarks: 37,
+    created_at: 'Fri Oct 31 13:30:50 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'It’s 2025, and still only 10% of Bitcoin has been bridged into DeFi.\n' +
+      '\n' +
+      'That means almost 90% of BTC i...',
+    views: '3051',
+    replies: 15,
+    retweets: 5,
+    favorites: 72,
+    quotes: 0,
+    bookmarks: 10,
+    created_at: 'Mon Nov 03 08:53:39 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'are we back? $Sui https://t.co/n1jBa6aRfL',
+    views: '5023',
+    replies: 33,
+    retweets: 6,
+    favorites: 138,
+    quotes: 0,
+    bookmarks: 4,
+    created_at: 'Fri Nov 07 18:35:23 +0000 2025'
+  }
+]
+📄 Search page 3 - Request ID: 71rqoyd { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 40 }
+📝 Sample tweets from page 3 - Request ID: 71rqoyd [
+  {
+    id: undefined,
+    text: 'Gm $Sui ☀️ https://t.co/q1TjVXuLyh',
+    views: '5661',
+    replies: 93,
+    retweets: 7,
+    favorites: 154,
+    quotes: 1,
+    bookmarks: 5,
+    created_at: 'Mon Oct 06 06:39:49 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Imagine if early Harry Potter fans owned 0.001% of the franchise.\n' +
+      '\n' +
+      'Every meme, every fan art, every ...',
+    views: '10184',
+    replies: 39,
+    retweets: 16,
+    favorites: 116,
+    quotes: 4,
+    bookmarks: 10,
+    created_at: 'Fri Oct 24 08:53:02 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'I AM NOT SELLING. $WAL https://t.co/abOfuyGzIi',
+    views: '4832',
+    replies: 34,
+    retweets: 15,
+    favorites: 153,
+    quotes: 1,
+    bookmarks: 7,
+    created_at: 'Tue Oct 21 12:30:53 +0000 2025'
+  }
+]
+📄 Search page 4 - Request ID: 71rqoyd { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 60 }
+📝 Sample tweets from page 4 - Request ID: 71rqoyd [
+  {
+    id: undefined,
+    text: 'JUST IN: DTCC HAS LISTED @21shares $SUI SPOT ETF (TSUI) 🚨 https://t.co/3tI3H2vXdQ',
+    views: '15884',
+    replies: 33,
+    retweets: 44,
+    favorites: 355,
+    quotes: 2,
+    bookmarks: 8,
+    created_at: 'Tue Sep 30 21:53:33 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: '🚨BREAKING: Introducing the $Sui Stack Messaging SDK\n' +
+      'A native, privacy-preserving messaging layer fo...',
+    views: '6291',
+    replies: 35,
+    retweets: 22,
+    favorites: 190,
+    quotes: 4,
+    bookmarks: 12,
+    created_at: 'Wed Sep 24 17:13:07 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Gm fam☀️\n' +
+      '\n' +
+      'are you bidding at these levels? $Sui $Wal $Deep $NS https://t.co/ljuSJGw5yf',
+    views: '4682',
+    replies: 54,
+    retweets: 11,
+    favorites: 133,
+    quotes: 0,
+    bookmarks: 5,
+    created_at: 'Fri Sep 26 07:26:26 +0000 2025'
+  }
+]
+📄 Search page 5 - Request ID: 71rqoyd { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 80 }
+📝 Sample tweets from page 5 - Request ID: 71rqoyd [
+  {
+    id: undefined,
+    text: 'Message is clear. $SUI TO $100\n' +
+      '\n' +
+      'Right? @dobychamp https://t.co/BTbD18Wrmh',
+    views: '6623',
+    replies: 75,
+    retweets: 12,
+    favorites: 186,
+    quotes: 1,
+    bookmarks: 5,
+    created_at: 'Fri Sep 05 13:43:16 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Breakups? Just part of the game. Suitember will come, sooner or later. $Sui $Wal https://t.co/Sa4Qkz...',
+    views: '4709',
+    replies: 57,
+    retweets: 11,
+    favorites: 119,
+    quotes: 3,
+    bookmarks: 8,
+    created_at: 'Mon Sep 01 15:23:34 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Here we gooo 🚀 Seal is live on Sui Mainnet! Walrus just made onchain storage, encryption and access...',
+    views: '5205',
+    replies: 26,
+    retweets: 15,
+    favorites: 123,
+    quotes: 2,
+    bookmarks: 7,
+    created_at: 'Wed Sep 03 17:10:50 +0000 2025'
+  }
+]
+📄 Search page 6 - Request ID: 71rqoyd { tweetsInPage: 7, hasNextCursor: true, totalTweetsSoFar: 100 }
+📝 Sample tweets from page 6 - Request ID: 71rqoyd [
+  {
+    id: undefined,
+    text: 'How to Bridge Assets to Sui\n' +
+      '\n' +
+      'If you have assets on other chains (like Ethereum or Solana), you must ...',
+    views: '501',
+    replies: 3,
+    retweets: 0,
+    favorites: 26,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Mon Jan 05 10:08:43 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'Getting your first Sui wallet to interact with Sui, you need a non-custodial wallet. This allows you...',
+    views: '806',
+    replies: 2,
+    retweets: 0,
+    favorites: 30,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Mon Jan 05 10:08:33 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'How to Stake SUI\n' +
+      '\n' +
+      'Staking helps secure the network and earns you rewards (APY varies, typically betw...',
+    views: '493',
+    replies: 2,
+    retweets: 0,
+    favorites: 23,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Mon Jan 05 10:08:47 +0000 2026'
+  }
+]
+📄 Search page 7 - Request ID: 71rqoyd { tweetsInPage: 0, hasNextCursor: false, totalTweetsSoFar: 107 }
+🔍 Search metrics: {
+  query: '(from:yuppibaladam) (@SuiTRCommunity OR SUI OR #SUI OR $SUI) since:2025-01-11 -filter:replies',
+  duration: 12364,
+  resultsCount: 107,
+  apiCalls: 7,
+  cacheHit: false
+}
+✅ Tweet search completed - Request ID: 71rqoyd {
+  tweetsFound: 107,
+  searchMetrics: {
+    query: '(from:yuppibaladam) (@SuiTRCommunity OR SUI OR #SUI OR $SUI) since:2025-01-11 -filter:replies',
+    duration: 12364,
+    resultsCount: 107,
+    apiCalls: 7,
+    cacheHit: false
+  }
+}
+📊 Calculating stats - Request ID: 71rqoyd { tweetsCount: 107 }
+📈 Raw metrics aggregated - Request ID: 71rqoyd {
+  tweets: 107,
+  views: 693361,
+  replies: 4182,
+  retweets: 2174,
+  likes: 14877,
+  quotes: 141,
+  bookmarks: 907
+}
+🎯 Engagement calculations - Request ID: 71rqoyd {
+  engagementScore: 26569.5,
+  engagementRate: 3.8319865120766816,
+  weights: { replies: 3, quotes: 3, retweets: 2, likes: 0.5, bookmarks: 2 }
+}
+✅ Stats calculated - Request ID: 71rqoyd {
+  user: {
+    id: '1269049020841897985',
+    username: 'yuppibaladam',
+    followersCount: 9832,
+    requestCount: 76
+  },
+  stats: {
+    raw: {
+      tweets: 107,
+      views: 693361,
+      replies: 4182,
+      retweets: 2174,
+      likes: 14877,
+      quotes: 141,
+      bookmarks: 907
+    },
+    calculated: { impressions: 693361, engagement: 26569.5, engagementRate: 3.83 }
+  }
+}
+💾 Saving to database - Request ID: 71rqoyd
+✅ Successfully saved to database - Request ID: 71rqoyd
+📤 Sending response - Request ID: 71rqoyd {
+  hasWarning: false,
+  userId: '1269049020841897985',
+  tweetsProcessed: 107,
+  impressions: 693361,
+  engagement: 26569.5,
+  engagementRate: 3.83
+}
+ POST /api/x 200 in 19.6s (compile: 34ms, render: 19.5s)

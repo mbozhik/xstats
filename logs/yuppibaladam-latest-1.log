@@ -1,0 +1,242 @@
+🔄 X API Request - Mode: FULL - Request ID: sdceqs
+📋 Request Parameters - Request ID: sdceqs {
+  username: 'yuppibaladam',
+  communitySlug: 'sui-tr-community',
+  timestamp: '2026-01-11T13:14:39.891Z'
+}
+👤 Fetching user info - Request ID: sdceqs { username: 'yuppibaladam' }
+✅ User info fetched - Request ID: sdceqs {
+  userId: '1269049020841897985',
+  username: 'yuppibaladam',
+  followersCount: 9837,
+  friends: 1833,
+  blue_verified: true
+}
+🏘️ Fetching community targets - Request ID: sdceqs { communitySlug: 'sui-tr-community' }
+✅ Community targets fetched - Request ID: sdceqs { username: 'SuiTRCommunity', hashtag: 'SUI', cashtag: 'SUI' }
+🔍 Starting tweet search - Request ID: sdceqs {
+  username: 'yuppibaladam',
+  targets: { username: 'SuiTRCommunity', hashtag: 'SUI', cashtag: 'SUI' },
+  liteMode: false
+}
+📄 Search page 1 - Request ID: sdceqs { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 0 }
+📝 Sample tweets from page 1 - Request ID: sdceqs [
+  {
+    id: undefined,
+    text: 'Privacy meta healing💧 $Sui',
+    views: '6036',
+    replies: 18,
+    retweets: 19,
+    favorites: 186,
+    quotes: 0,
+    bookmarks: 4,
+    created_at: 'Thu Jan 08 12:33:05 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'Everyone is misreading the SUIG x ETHENA x SUI partnership.\n' +
+      '\n' +
+      `This isn't a standard "DeFi integration...`,
+    views: '6809',
+    replies: 16,
+    retweets: 13,
+    favorites: 115,
+    quotes: 2,
+    bookmarks: 13,
+    created_at: 'Wed Jan 07 16:11:11 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'Wake me up when $Sui hits $2 https://t.co/5Dd8sDNy9a',
+    views: '2692',
+    replies: 32,
+    retweets: 7,
+    favorites: 143,
+    quotes: 1,
+    bookmarks: 3,
+    created_at: 'Tue Jan 06 12:12:15 +0000 2026'
+  }
+]
+📄 Search page 2 - Request ID: sdceqs { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 20 }
+📝 Sample tweets from page 2 - Request ID: sdceqs [
+  {
+    id: undefined,
+    text: '🚨JUST IN: Following @Claynosaurz team’s @HeebooOfficial Launchpad\n' +
+      'announcement, Popkins floor price...',
+    views: '14127',
+    replies: 18,
+    retweets: 9,
+    favorites: 130,
+    quotes: 2,
+    bookmarks: 7,
+    created_at: 'Fri Oct 24 17:21:20 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Nature is healing. $Sui $Wal $Deep $Ns\n\nWal👀 https://t.co/XEyR51i0Jr',
+    views: '6330',
+    replies: 27,
+    retweets: 11,
+    favorites: 172,
+    quotes: 0,
+    bookmarks: 6,
+    created_at: 'Sun Oct 19 11:23:10 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Yo $Sui fam, how is Popkins staking going? \n' +
+      '\n' +
+      'What level are you at? 🔥 https://t.co/EdjU4hfwKu',
+    views: '2600',
+    replies: 27,
+    retweets: 10,
+    favorites: 88,
+    quotes: 0,
+    bookmarks: 9,
+    created_at: 'Thu Oct 09 13:12:00 +0000 2025'
+  }
+]
+📄 Search page 3 - Request ID: sdceqs { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 40 }
+📝 Sample tweets from page 3 - Request ID: sdceqs [
+  {
+    id: undefined,
+    text: 'The logos in this image shaped the Web2 era\n' +
+      '\n' +
+      'But on the Sui stack(Walrus, SEAL, Nautilus) did you kn...',
+    views: '2266',
+    replies: 50,
+    retweets: 13,
+    favorites: 78,
+    quotes: 0,
+    bookmarks: 7,
+    created_at: 'Mon Sep 08 12:46:05 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Gm $Sui fam 🌊\n' +
+      '\n' +
+      '@DeepBookonSui  DC campaign is live and continues with new drops and topics shared r...',
+    views: '6421',
+    replies: 67,
+    retweets: 11,
+    favorites: 172,
+    quotes: 3,
+    bookmarks: 13,
+    created_at: 'Sat Sep 06 03:37:29 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Message is clear. $SUI TO $100\n' +
+      '\n' +
+      'Right? @dobychamp https://t.co/BTbD18Wrmh',
+    views: '6623',
+    replies: 75,
+    retweets: 12,
+    favorites: 186,
+    quotes: 1,
+    bookmarks: 5,
+    created_at: 'Fri Sep 05 13:43:16 +0000 2025'
+  }
+]
+📄 Search page 4 - Request ID: sdceqs { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 60 }
+📝 Sample tweets from page 4 - Request ID: sdceqs [
+  {
+    id: undefined,
+    text: 'Breaking: @sygnumofficial announces SUI support for clients on the back of serving as banking partne...',
+    views: '2697',
+    replies: 29,
+    retweets: 6,
+    favorites: 95,
+    quotes: 1,
+    bookmarks: 4,
+    created_at: 'Fri Aug 08 07:25:52 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Sui in a league of its own. 💧\n\nThis is how you onboard the next billion',
+    views: '1752',
+    replies: 20,
+    retweets: 5,
+    favorites: 63,
+    quotes: 0,
+    bookmarks: 1,
+    created_at: 'Thu Aug 07 18:57:57 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'SUIII FAMMMMMMMMMM🌊\n' +
+      '\n' +
+      'We going higher🔥 $SUI $WAL $DEEP $NS https://t.co/fppUsn5Xor',
+    views: '3269',
+    replies: 49,
+    retweets: 11,
+    favorites: 127,
+    quotes: 0,
+    bookmarks: 1,
+    created_at: 'Thu Aug 07 11:08:25 +0000 2025'
+  }
+]
+📄 Search page 5 - Request ID: sdceqs { tweetsInPage: 0, hasNextCursor: false, totalTweetsSoFar: 80 }
+🔍 Search metrics: {
+  query: '(from:yuppibaladam) (@SuiTRCommunity OR SUI OR #SUI OR $SUI) since:2025-01-11 -filter:replies',
+  duration: 7722,
+  resultsCount: 80,
+  apiCalls: 5,
+  cacheHit: false
+}
+✅ Tweet search completed - Request ID: sdceqs {
+  tweetsFound: 80,
+  searchMetrics: {
+    query: '(from:yuppibaladam) (@SuiTRCommunity OR SUI OR #SUI OR $SUI) since:2025-01-11 -filter:replies',
+    duration: 7722,
+    resultsCount: 80,
+    apiCalls: 5,
+    cacheHit: false
+  }
+}
+📊 Calculating stats - Request ID: sdceqs { tweetsCount: 80 }
+📈 Raw metrics aggregated - Request ID: sdceqs {
+  tweets: 80,
+  views: 511853,
+  replies: 3166,
+  retweets: 1167,
+  likes: 11763,
+  quotes: 102,
+  bookmarks: 664
+}
+🎯 Engagement calculations - Request ID: sdceqs {
+  engagementScore: 19347.5,
+  engagementRate: 3.779893836707023,
+  weights: { replies: 3, quotes: 3, retweets: 2, likes: 0.5, bookmarks: 2 }
+}
+✅ Stats calculated - Request ID: sdceqs {
+  user: {
+    id: '1269049020841897985',
+    username: 'yuppibaladam',
+    followersCount: 9837,
+    requestCount: 78
+  },
+  stats: {
+    raw: {
+      tweets: 80,
+      views: 511853,
+      replies: 3166,
+      retweets: 1167,
+      likes: 11763,
+      quotes: 102,
+      bookmarks: 664
+    },
+    calculated: { impressions: 511853, engagement: 19347.5, engagementRate: 3.78 }
+  }
+}
+💾 Saving to database - Request ID: sdceqs
+✅ Successfully saved to database - Request ID: sdceqs
+📤 Sending response - Request ID: sdceqs {
+  hasWarning: false,
+  userId: '1269049020841897985',
+  tweetsProcessed: 80,
+  impressions: 511853,
+  engagement: 19347.5,
+  engagementRate: 3.78
+}
+ POST /api/x 200 in 15.2s (compile: 31ms, render: 15.1s)

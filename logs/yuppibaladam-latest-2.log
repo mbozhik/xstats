@@ -1,0 +1,648 @@
+🔄 X API Request - Mode: FULL - Request ID: e6f7o
+📋 Request Parameters - Request ID: e6f7o {
+  username: 'yuppibaladam',
+  communitySlug: 'sui-tr-community',
+  timestamp: '2026-01-11T13:15:22.812Z'
+}
+👤 Fetching user info - Request ID: e6f7o { username: 'yuppibaladam' }
+✅ User info fetched - Request ID: e6f7o {
+  userId: '1269049020841897985',
+  username: 'yuppibaladam',
+  followersCount: 9837,
+  friends: 1833,
+  blue_verified: true
+}
+🏘️ Fetching community targets - Request ID: e6f7o { communitySlug: 'sui-tr-community' }
+✅ Community targets fetched - Request ID: e6f7o { username: 'SuiTRCommunity', hashtag: 'SUI', cashtag: 'SUI' }
+🔍 Starting tweet search - Request ID: e6f7o {
+  username: 'yuppibaladam',
+  targets: { username: 'SuiTRCommunity', hashtag: 'SUI', cashtag: 'SUI' },
+  liteMode: false
+}
+📄 Search page 1 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 0 }
+📝 Sample tweets from page 1 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'Privacy meta healing💧 $Sui',
+    views: '6036',
+    replies: 18,
+    retweets: 19,
+    favorites: 186,
+    quotes: 0,
+    bookmarks: 4,
+    created_at: 'Thu Jan 08 12:33:05 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'Everyone is misreading the SUIG x ETHENA x SUI partnership.\n' +
+      '\n' +
+      `This isn't a standard "DeFi integration...`,
+    views: '6809',
+    replies: 16,
+    retweets: 13,
+    favorites: 115,
+    quotes: 2,
+    bookmarks: 13,
+    created_at: 'Wed Jan 07 16:11:11 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'Wake me up when $Sui hits $2 https://t.co/5Dd8sDNy9a',
+    views: '2692',
+    replies: 32,
+    retweets: 7,
+    favorites: 143,
+    quotes: 1,
+    bookmarks: 3,
+    created_at: 'Tue Jan 06 12:12:15 +0000 2026'
+  }
+]
+📄 Search page 2 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 20 }
+📝 Sample tweets from page 2 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: '@SuiNetwork Sui Community is always doing Deferent &amp; Amazing 💧🩵',
+    views: '139',
+    replies: 0,
+    retweets: 0,
+    favorites: 0,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Fri Jan 09 18:00:09 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'Big money doesn’t move quietly. 🐋 Always believe in the $SUI 😍',
+    views: '716',
+    replies: 0,
+    retweets: 1,
+    favorites: 10,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Thu Jan 08 08:52:54 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'SUIかなり強いな‼️\n' +
+      'これなら更なる一段高もありそうだ‼️\n' +
+      '\n' +
+      'と言う事は我らがCETUSも…😆 https://t.co/ISVdmfMBer',
+    views: '405',
+    replies: 0,
+    retweets: 0,
+    favorites: 10,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Tue Jan 06 11:39:50 +0000 2026'
+  }
+]
+📄 Search page 3 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 40 }
+📝 Sample tweets from page 3 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: '🚨BREAKING: @Google  ANNOUNCES ITS AGENTIC PAYMENTS PROTOCOL, NAMING $SUI AS A LAUNCH PARTNER.\n' +
+      '\n' +
+      'AI A...',
+    views: '22627',
+    replies: 55,
+    retweets: 83,
+    favorites: 653,
+    quotes: 11,
+    bookmarks: 14,
+    created_at: 'Tue Sep 16 13:54:22 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Sunday chill ☀️\n' +
+      '\n' +
+      'You open the fridge…which one is your pick?\n' +
+      '🍼 $Sui\n' +
+      '🥤 $Deep\n' +
+      '🍺 $Wal\n' +
+      '🥛 $NS https:/...',
+    views: '8549',
+    replies: 72,
+    retweets: 18,
+    favorites: 198,
+    quotes: 5,
+    bookmarks: 8,
+    created_at: 'Sun Sep 14 12:55:29 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Gm fam☀️\n' +
+      '\n' +
+      '$SUI has more airdrops coming soon 🪂 \n' +
+      '\n' +
+      '✅ Stake $NS → https://t.co/z2ZDvNTCYZ\n' +
+      '✅ Stake $WAL...',
+    views: '13130',
+    replies: 61,
+    retweets: 25,
+    favorites: 211,
+    quotes: 3,
+    bookmarks: 42,
+    created_at: 'Fri Sep 12 08:15:00 +0000 2025'
+  }
+]
+📄 Search page 4 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 60 }
+📝 Sample tweets from page 4 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'The frontline for Sui’s trench warriors 🪖 @blastdotfun \n' +
+      '\n' +
+      'https://t.co/KPkyTiCzgV',
+    views: '4004',
+    replies: 35,
+    retweets: 10,
+    favorites: 72,
+    quotes: 1,
+    bookmarks: 1,
+    created_at: 'Thu Aug 14 10:14:18 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: '. @blastdotfun hasn’t even dropped the official live announcement yet, but 2 tokens have already bee...',
+    views: '7348',
+    replies: 89,
+    retweets: 5,
+    favorites: 132,
+    quotes: 3,
+    bookmarks: 6,
+    created_at: 'Thu Aug 14 05:18:14 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: '💻 Our Sui TR developer site is live!\n' +
+      '\n' +
+      '🌐 → https://t.co/MDpzeFircH\n' +
+      '\n' +
+      'Join Türkiye’s first-ever Sui D...',
+    views: '4054',
+    replies: 33,
+    retweets: 10,
+    favorites: 72,
+    quotes: 0,
+    bookmarks: 2,
+    created_at: 'Wed Aug 13 10:17:44 +0000 2025'
+  }
+]
+📄 Search page 5 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 80 }
+📝 Sample tweets from page 5 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: '.@SuiTRCommunity ailesi olarak Blub ekibine kocaman teşekkürler! 🐟💙\n' +
+      '\n' +
+      '@blubsui ekibi, Sui TR toplul...',
+    views: '2502',
+    replies: 39,
+    retweets: 14,
+    favorites: 79,
+    quotes: 0,
+    bookmarks: 14,
+    created_at: 'Mon Jul 21 09:25:49 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'it’s just hard for people to recognize innovation, and even harder to evaluate it, the easiest and "...',
+    views: '2358',
+    replies: 26,
+    retweets: 14,
+    favorites: 128,
+    quotes: 0,
+    bookmarks: 4,
+    created_at: 'Fri Jul 18 07:06:40 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Sui Türkiye topluluğunun Discord sunucusu yayında! Herkesi bekliyoruz 🌊🇹🇷\n' +
+      '\n' +
+      'The Sui Türkiye commun...',
+    views: '2658',
+    replies: 27,
+    retweets: 7,
+    favorites: 67,
+    quotes: 1,
+    bookmarks: 4,
+    created_at: 'Tue Jul 15 17:42:58 +0000 2025'
+  }
+]
+📄 Search page 6 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 100 }
+📝 Sample tweets from page 6 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'Limited tees by the @SuiTRCommunity — for Sui Connect Istanbul.\n' +
+      '\n' +
+      'How do you like them? 🔥🔥💧 https:...',
+    views: '3679',
+    replies: 38,
+    retweets: 3,
+    favorites: 92,
+    quotes: 0,
+    bookmarks: 2,
+    created_at: 'Mon Jun 23 14:43:58 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'The @ikadotxyz  drop is an important turning point for the Sui ecosystem. But from the outside, it s...',
+    views: '10543',
+    replies: 48,
+    retweets: 6,
+    favorites: 130,
+    quotes: 0,
+    bookmarks: 3,
+    created_at: 'Mon Jun 23 07:51:10 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: '🧵SCION + Sui: The first blockchain to bring decentralization to the internet layer.\n' +
+      '\n' +
+      'The foundation...',
+    views: '10655',
+    replies: 48,
+    retweets: 36,
+    favorites: 150,
+    quotes: 0,
+    bookmarks: 26,
+    created_at: 'Fri Jun 20 12:52:46 +0000 2025'
+  }
+]
+📄 Search page 7 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 120 }
+📝 Sample tweets from page 7 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'Postu alıntıladığım arkadaş bu sektörde ki saygın kişilerden biri, hatta son yaşanan hack olayının a...',
+    views: '4764',
+    replies: 45,
+    retweets: 9,
+    favorites: 67,
+    quotes: 0,
+    bookmarks: 2,
+    created_at: 'Sat May 24 18:14:27 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Selam dostlar, bu postu dün alıntılaycaktım ama dışarda olduğum için gecikmeli olarak yazıyı özet ge...',
+    views: '5153',
+    replies: 53,
+    retweets: 11,
+    favorites: 73,
+    quotes: 0,
+    bookmarks: 1,
+    created_at: 'Sat May 24 11:22:51 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Gm Sui fam 🌞🌊\n' +
+      '\n' +
+      'We just gave a solid answer to those who underestimated the patience and loyalty of...',
+    views: '3916',
+    replies: 58,
+    retweets: 11,
+    favorites: 104,
+    quotes: 0,
+    bookmarks: 2,
+    created_at: 'Fri May 23 12:28:42 +0000 2025'
+  }
+]
+📄 Search page 8 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 140 }
+📝 Sample tweets from page 8 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: '@SuiNetwork Sui Community is always doing Deferent &amp; Amazing 💧🩵',
+    views: '139',
+    replies: 0,
+    retweets: 0,
+    favorites: 0,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Fri Jan 09 18:00:09 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'Big money doesn’t move quietly. 🐋 Always believe in the $SUI 😍',
+    views: '716',
+    replies: 0,
+    retweets: 1,
+    favorites: 10,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Thu Jan 08 08:52:54 +0000 2026'
+  },
+  {
+    id: undefined,
+    text: 'SUIかなり強いな‼️\n' +
+      'これなら更なる一段高もありそうだ‼️\n' +
+      '\n' +
+      'と言う事は我らがCETUSも…😆 https://t.co/ISVdmfMBer',
+    views: '405',
+    replies: 0,
+    retweets: 0,
+    favorites: 10,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Tue Jan 06 11:39:50 +0000 2026'
+  }
+]
+📄 Search page 9 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 160 }
+📝 Sample tweets from page 9 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'SON DAKİKA: Sui’de Yeni Dönem Başladı, @SLUSHWALLET Artık Yayında!\n' +
+      '\n' +
+      'SUI WALLET ile STASHED birleşti,...',
+    views: '8247',
+    replies: 56,
+    retweets: 20,
+    favorites: 98,
+    quotes: 1,
+    bookmarks: 21,
+    created_at: 'Fri Apr 25 19:44:39 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Gm Sui fam🌊 The Sui eco is flying and it feels like we’re pricing in some big news ahead of Basecam...',
+    views: '7638',
+    replies: 86,
+    retweets: 27,
+    favorites: 217,
+    quotes: 0,
+    bookmarks: 3,
+    created_at: 'Fri Apr 25 07:11:56 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: '$Apt chartına bakayım dedim 2022 yılında ki seviyelerine geri dönmüş :D\n' +
+      '\n' +
+      'Konu sadece fiyat hareketi ...',
+    views: '10501',
+    replies: 44,
+    retweets: 18,
+    favorites: 104,
+    quotes: 0,
+    bookmarks: 3,
+    created_at: 'Thu Apr 24 20:24:53 +0000 2025'
+  }
+]
+📄 Search page 10 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 180 }
+📝 Sample tweets from page 10 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'İlk önce $Deep sonra $NS, şimdide $Wal!\n' +
+      '\n' +
+      'Sui airdropları yüzümüzü güldürmeye devam ediyor🥳\n' +
+      '\n' +
+      'Sui Tür...',
+    views: '13162',
+    replies: 30,
+    retweets: 17,
+    favorites: 108,
+    quotes: 2,
+    bookmarks: 18,
+    created_at: 'Thu Mar 27 11:05:50 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Wow 🤯this was one of the biggest drops I’ve ever taken in my life🔥\n' +
+      '\n' +
+      'Sui fam is eating good as alwa...',
+    views: '22837',
+    replies: 66,
+    retweets: 17,
+    favorites: 203,
+    quotes: 1,
+    bookmarks: 12,
+    created_at: 'Thu Mar 27 10:18:07 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'I smell $SUI szn https://t.co/ODcMa0ocHu',
+    views: '3627',
+    replies: 36,
+    retweets: 18,
+    favorites: 123,
+    quotes: 0,
+    bookmarks: 3,
+    created_at: 'Wed Mar 26 20:30:05 +0000 2025'
+  }
+]
+📄 Search page 11 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 200 }
+📝 Sample tweets from page 11 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: "Gm Sui fam, don't forget to set up notifications for your domain names. Get reminders 30 and 10 days...",
+    views: '4733',
+    replies: 31,
+    retweets: 11,
+    favorites: 69,
+    quotes: 0,
+    bookmarks: 7,
+    created_at: 'Thu Mar 06 08:20:20 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'I’m an active Sui user and I barely even knew about the mint. Is it clear which communities in Sui w...',
+    views: '7810',
+    replies: 42,
+    retweets: 9,
+    favorites: 91,
+    quotes: 1,
+    bookmarks: 2,
+    created_at: 'Wed Mar 05 18:11:08 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Here we go! Sui eco buzzing again🌊\n' +
+      '\n' +
+      '$Sui $Deep $Cetus $Send $Ns $Blue $Sca https://t.co/BkGZftpB8D',
+    views: '6458',
+    replies: 37,
+    retweets: 21,
+    favorites: 160,
+    quotes: 1,
+    bookmarks: 3,
+    created_at: 'Sun Mar 02 16:43:03 +0000 2025'
+  }
+]
+📄 Search page 12 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 220 }
+📝 Sample tweets from page 12 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'Selam dostlar, Sui haftalık özet yayında. Desteğiniz önemli, şimdiden teşekkürler🫡\n' +
+      '\n' +
+      'Konu başlıkları...',
+    views: '2268',
+    replies: 8,
+    retweets: 9,
+    favorites: 60,
+    quotes: 0,
+    bookmarks: 6,
+    created_at: 'Fri Feb 14 07:18:29 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'When the price action is bad, negative and FUD statements are natural for any project but as the Sui...',
+    views: '4179',
+    replies: 6,
+    retweets: 5,
+    favorites: 42,
+    quotes: 1,
+    bookmarks: 2,
+    created_at: 'Thu Feb 13 17:39:42 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Sui/Btc 1D is BULLISH AF🔥\n' +
+      '\n' +
+      'We going higher bros🌊 https://t.co/rXeDjZCGpp',
+    views: '3109',
+    replies: 38,
+    retweets: 25,
+    favorites: 80,
+    quotes: 0,
+    bookmarks: 4,
+    created_at: 'Thu Feb 13 13:41:01 +0000 2025'
+  }
+]
+📄 Search page 13 - Request ID: e6f7o { tweetsInPage: 20, hasNextCursor: true, totalTweetsSoFar: 240 }
+📝 Sample tweets from page 13 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'Sui made a strong surge and now Sui eco is on fire 🌊 \n' +
+      '\n' +
+      '$Sui $Deep $Cetus $Send $Ns $Blue $sca https...',
+    views: '13136',
+    replies: 59,
+    retweets: 52,
+    favorites: 275,
+    quotes: 1,
+    bookmarks: 7,
+    created_at: 'Thu Jan 30 09:24:31 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'SON DAKİKA: @vaneck_us , #SUI’Yİ #APTOS’A TERCİH EDİYOR:\n' +
+      '\n' +
+      'Van Eck’in dün yayınladığı Sui vs Aptos in...',
+    views: '1645',
+    replies: 3,
+    retweets: 1,
+    favorites: 31,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Thu Jan 30 07:53:49 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: '🚨BREAKING: Phantom is LIVE on Sui🔥\n' +
+      '\n' +
+      'Swap, trade &amp; explore Sui’s top dApps seamlessly with @Pha...',
+    views: '15640',
+    replies: 64,
+    retweets: 59,
+    favorites: 317,
+    quotes: 1,
+    bookmarks: 5,
+    created_at: 'Wed Jan 29 14:07:04 +0000 2025'
+  }
+]
+📄 Search page 14 - Request ID: e6f7o { tweetsInPage: 7, hasNextCursor: true, totalTweetsSoFar: 260 }
+📝 Sample tweets from page 14 - Request ID: e6f7o [
+  {
+    id: undefined,
+    text: 'Donald Trump’ın oğlu ve Trump Organization’ın başkan yardımcısı olan Eric Trump, $Sui de dahil olmak...',
+    views: '4230',
+    replies: 9,
+    retweets: 11,
+    favorites: 50,
+    quotes: 1,
+    bookmarks: 2,
+    created_at: 'Wed Jan 15 07:01:12 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Vay bee, Sui’yi Türkiye kanallarında görmekte varmış. Güzel günler yakın 🔥',
+    views: '2149',
+    replies: 8,
+    retweets: 9,
+    favorites: 47,
+    quotes: 0,
+    bookmarks: 0,
+    created_at: 'Tue Jan 14 20:20:57 +0000 2025'
+  },
+  {
+    id: undefined,
+    text: 'Sui hacimde Avaxı ikiye katlamış. Yakında Avaxı geçtiğini görmemiz muhtemel. https://t.co/VgZRjrlNLF',
+    views: '1575',
+    replies: 9,
+    retweets: 9,
+    favorites: 32,
+    quotes: 0,
+    bookmarks: 1,
+    created_at: 'Tue Jan 14 18:41:39 +0000 2025'
+  }
+]
+📄 Search page 15 - Request ID: e6f7o { tweetsInPage: 0, hasNextCursor: false, totalTweetsSoFar: 267 }
+🔍 Search metrics: {
+  query: '(from:yuppibaladam) (@SuiTRCommunity OR SUI OR #SUI OR $SUI) since:2025-01-11 -filter:replies',
+  duration: 24491,
+  resultsCount: 267,
+  apiCalls: 15,
+  cacheHit: false
+}
+✅ Tweet search completed - Request ID: e6f7o {
+  tweetsFound: 267,
+  searchMetrics: {
+    query: '(from:yuppibaladam) (@SuiTRCommunity OR SUI OR #SUI OR $SUI) since:2025-01-11 -filter:replies',
+    duration: 24491,
+    resultsCount: 267,
+    apiCalls: 15,
+    cacheHit: false
+  }
+}
+📊 Calculating stats - Request ID: e6f7o { tweetsCount: 267 }
+📈 Raw metrics aggregated - Request ID: e6f7o {
+  tweets: 267,
+  views: 1546620,
+  replies: 13017,
+  retweets: 4929,
+  likes: 32834,
+  quotes: 237,
+  bookmarks: 1604
+}
+🎯 Engagement calculations - Request ID: e6f7o {
+  engagementScore: 69245,
+  engagementRate: 4.477182501196157,
+  weights: { replies: 3, quotes: 3, retweets: 2, likes: 0.5, bookmarks: 2 }
+}
+✅ Stats calculated - Request ID: e6f7o {
+  user: {
+    id: '1269049020841897985',
+    username: 'yuppibaladam',
+    followersCount: 9837,
+    requestCount: 79
+  },
+  stats: {
+    raw: {
+      tweets: 267,
+      views: 1546620,
+      replies: 13017,
+      retweets: 4929,
+      likes: 32834,
+      quotes: 237,
+      bookmarks: 1604
+    },
+    calculated: { impressions: 1546620, engagement: 69245, engagementRate: 4.48 }
+  }
+}
+💾 Saving to database - Request ID: e6f7o
+✅ Successfully saved to database - Request ID: e6f7o
+📤 Sending response - Request ID: e6f7o {
+  hasWarning: false,
+  userId: '1269049020841897985',
+  tweetsProcessed: 267,
+  impressions: 1546620,
+  engagement: 69245,
+  engagementRate: 4.48
+}
+ POST /api/x 200 in 31.9s (compile: 1777µs, render: 31.9s)
