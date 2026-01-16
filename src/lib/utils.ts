@@ -29,3 +29,10 @@ export function getTimeAgo(dateInput: string | number): string {
     return diffDays === 1 ? '1 day ago' : `${diffDays} days ago`
   }
 }
+
+// Helper function to get date one year ago in YYYY-MM-DD format
+export function getOneYearAgoDate(): string {
+  const date = new Date()
+  date.setFullYear(date.getFullYear() - 1)
+  return date.toISOString().split('T')[0] // Returns YYYY-MM-DD
+}

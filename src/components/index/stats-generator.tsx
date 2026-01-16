@@ -8,7 +8,7 @@ import {api} from '@convex/_generated/api'
 import {useCommunity} from '@/hooks/use-community'
 import {useDebounce} from '@/hooks/use-debounce'
 import {useStatsGeneration, useImageGeneration} from '@/hooks/use-stats-generation'
-import {cn, cleanXAvatarUrl, getTimeAgo} from '@/lib/utils'
+import {cn, cleanXAvatarUrl, getTimeAgo, getOneYearAgoDate} from '@/lib/utils'
 
 import {useState} from 'react'
 import {useQuery} from 'convex/react'
@@ -144,7 +144,7 @@ export default function StatsGenerator() {
         {isGenerating
           ? 'Generating your stats card...' // fetching
           : result
-            ? 'Your Stats Card' // generated
+            ? `Your Stats Card (since: ${getOneYearAgoDate().split('-').reverse().join('.')})` // generated
             : userData.exists
               ? 'Click generate to create your stats card' // initial
               : null}

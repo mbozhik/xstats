@@ -5,6 +5,7 @@ import {xApiProvider, LITE_MODE} from '@/lib/x-api/config'
 
 import {ConvexHttpClient} from 'convex/browser'
 import {api} from '@convex/_generated/api'
+import {getOneYearAgoDate} from '@/lib/utils'
 
 const DETAILED_LOGGING: boolean = false
 
@@ -41,13 +42,6 @@ interface ExtendedTweetData extends XTweetData {
   id?: string
   text?: string
   created_at?: string
-}
-
-// Helper function to get date one year ago in YYYY-MM-DD format
-function getOneYearAgoDate(): string {
-  const date = new Date()
-  date.setFullYear(date.getFullYear() - 1)
-  return date.toISOString().split('T')[0] // Returns YYYY-MM-DD
 }
 
 export async function POST(request: NextRequest) {
@@ -459,7 +453,7 @@ async function searchUserTweets(username: string, targets: {username: string; ha
       const endpoint = xApiProvider.endpoints.searchTweets
       const url = new URL(endpoint.path, xApiProvider.baseUrl)
       url.searchParams.set('query', query)
-      url.searchParams.set('search_type', 'Top' as NonNullable<XSearchTweetsParamsSearchType>)
+      url.searchParams.set('search_type', 'Latest' as NonNullable<XSearchTweetsParamsSearchType>)
 
       if (cursor) {
         url.searchParams.set('cursor', cursor)
