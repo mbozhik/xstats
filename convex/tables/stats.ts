@@ -58,3 +58,20 @@ export const getStatsById = query({
     return await ctx.db.get(args.id)
   },
 })
+
+// Get recent stats for user and community (for caching)
+export const getRecentStatsForUserAndCommunity = query({
+  args: {
+    userId: v.id('users'),
+    communityId: v.id('communities'),
+    since: v.number(), // timestamp in milliseconds
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query('stats')
+      .withIndex('by_user_community', (q) => q.eq('userId', args.userId).eq('communityId', args.communityId))
+      .filter((q) => q.gte(q.field('_creationTime'), args.since))
+      .order('desc') // most recent first
+      .take(1) // only need the most recent
+  },
+})

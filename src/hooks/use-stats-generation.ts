@@ -75,6 +75,13 @@ export function useStatsGeneration({username, communitySlug, communityValid}: Us
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
 
+        if (response.status === 429 && errorData.source === 'rate_limited_blocked') {
+          // Rate limit exceeded - blocked
+          setError(errorData.message || 'Rate limit exceeded')
+          toast.error(errorData.message || 'Rate limit exceeded. Try again tomorrow.')
+          return
+        }
+
         if (response.status >= 500 || errorData.error?.includes('Service configuration')) {
           setError(errorData.message || `Server error: ${response.status}`)
           toast.error('Failed to generate stats')
@@ -87,10 +94,22 @@ export function useStatsGeneration({username, communitySlug, communityValid}: Us
 
       const responseData: GenerateStatsResponse = await response.json()
 
-      if (responseData.warning) {
-        toast.warning(responseData.warning)
-      } else {
-        toast.success('Stats generated successfully!')
+      // Handle different response sources
+      switch (responseData.source) {
+        case 'cache':
+          toast.info('Stats loaded from cache (updated within 24h)')
+          break
+        case 'rate_limited_cache':
+          toast.warning('Rate limit reached - showing cached data')
+          break
+        case 'fresh':
+        default:
+          if (responseData.warning) {
+            toast.warning(responseData.warning)
+          } else {
+            toast.success('Stats generated successfully!')
+          }
+          break
       }
 
       setResult(responseData.data)

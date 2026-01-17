@@ -7,7 +7,12 @@ import {ConvexHttpClient} from 'convex/browser'
 import {api} from '@convex/_generated/api'
 import {getOneYearAgoDate} from '@/lib/utils'
 
-const DETAILED_LOGGING: boolean = false
+// Feature flags with environment variable control
+const CACHE_ENABLED = process.env.CACHE_ENABLED === 'true' // default: false
+const CACHE_TTL_HOURS = parseInt(process.env.CACHE_TTL_HOURS || '24') // 12 or 24 hours
+const RATE_LIMIT_ENABLED = process.env.RATE_LIMIT_ENABLED === 'true' // default: false
+const RATE_LIMIT_REQUESTS_PER_DAY = parseInt(process.env.RATE_LIMIT_REQUESTS_PER_DAY || '5') // max requests per day
+const DETAILED_LOGGING = process.env.DETAILED_LOGGING === 'true' // default: false, enable with DETAILED_LOGGING=true
 
 interface SearchMetrics {
   query: string
@@ -19,7 +24,7 @@ interface SearchMetrics {
 
 // Логирование метрик для анализа производительности
 function logSearchMetrics(metrics: SearchMetrics) {
-  console.log(`🔍 Search metrics:`, metrics)
+  console.log(`🔍 Search metrics (${CACHE_ENABLED ? 'cache:ON' : 'cache:OFF'} ${RATE_LIMIT_ENABLED ? 'rate-limit:ON' : 'rate-limit:OFF'}):`, metrics)
 }
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!)
@@ -44,9 +49,179 @@ interface ExtendedTweetData extends XTweetData {
   created_at?: string
 }
 
+// Cache helper: check if valid stats exist for user+community within TTL
+async function checkStatsCache(username: string, communitySlug: string, ttlHours: number): Promise<{data: UserStatsData; userId: string; communityId: string} | null> {
+  if (!CACHE_ENABLED) return null
+
+  try {
+    const ttlMs = ttlHours * 60 * 60 * 1000
+    const cutoffTime = Date.now() - ttlMs
+
+    // Get community first to get its Convex ID
+    const community = await convex.query(api.tables.communities.getCommunityBySlug, {slug: communitySlug})
+    if (!community) return null
+
+    // Get user first to get its Convex ID
+    const user = await convex.query(api.tables.users.getUserByUsername, {username})
+    if (!user) return null
+
+    // Check if we have recent stats for this user+community
+    const recentStats = await convex.query(api.tables.stats.getRecentStatsForUserAndCommunity, {
+      userId: user._id,
+      communityId: community._id,
+      since: cutoffTime,
+    })
+
+    if (recentStats && recentStats.length > 0) {
+      // Get the most recent stats
+      const latestStats = recentStats[0]
+
+      const cachedData: UserStatsData = {
+        user: {
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          avatar: user.avatar,
+          followersCount: user.followersCount,
+          requestCount: user.requestCount,
+          lastActivity: user.lastActivity,
+        },
+        stats: {
+          raw: latestStats.raw,
+          calculated: {
+            impressions: latestStats.calculated.impressions,
+            engagement: latestStats.calculated.engagement,
+            engagementRate: latestStats.calculated.engagementRate || 0,
+          },
+        },
+      }
+
+      return {data: cachedData, userId: user._id, communityId: community._id}
+    }
+
+    return null
+  } catch (error) {
+    console.warn('Cache check failed:', error)
+    return null // Continue with fresh request on cache error
+  }
+}
+
+// Rate limit helper: check and update cookie-based rate limiting
+function checkRateLimit(request: NextRequest, username: string): {allowed: boolean; remainingRequests: number; source: 'rate_limited_cache' | 'rate_limited_blocked' | 'allowed'; cachedData?: UserStatsData} {
+  if (!RATE_LIMIT_ENABLED) return {allowed: true, remainingRequests: RATE_LIMIT_REQUESTS_PER_DAY, source: 'allowed'}
+
+  try {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const cookieName = `xstats_ratelimit_${ip.replace(/\./g, '_')}`
+
+    // Get existing cookie data
+    const cookieValue = request.cookies.get(cookieName)?.value
+    let rateLimitData: {requests: number[]; username?: string; cachedData?: UserStatsData} = {requests: []}
+
+    if (cookieValue) {
+      try {
+        rateLimitData = JSON.parse(cookieValue)
+      } catch {
+        // Invalid cookie, reset
+        rateLimitData = {requests: []}
+      }
+    }
+
+    // Clean old requests (older than 24 hours)
+    const now = Date.now()
+    const oneDayMs = 24 * 60 * 60 * 1000
+    rateLimitData.requests = rateLimitData.requests.filter((timestamp) => now - timestamp < oneDayMs)
+
+    // Check if username changed (allow new username after limit)
+    const isNewUsername = rateLimitData.username !== username
+    if (isNewUsername) {
+      rateLimitData.requests = []
+      rateLimitData.username = username
+    }
+
+    const remainingRequests = Math.max(0, RATE_LIMIT_REQUESTS_PER_DAY - rateLimitData.requests.length)
+
+    if (rateLimitData.requests.length >= RATE_LIMIT_REQUESTS_PER_DAY) {
+      // Rate limit exceeded
+      if (rateLimitData.cachedData) {
+        return {
+          allowed: false,
+          remainingRequests: 0,
+          source: 'rate_limited_cache',
+          cachedData: rateLimitData.cachedData,
+        }
+      } else {
+        return {
+          allowed: false,
+          remainingRequests: 0,
+          source: 'rate_limited_blocked',
+        }
+      }
+    }
+
+    // Rate limit OK - add current request timestamp
+    rateLimitData.requests.push(now)
+
+    return {
+      allowed: true,
+      remainingRequests: remainingRequests - 1,
+      source: 'allowed',
+    }
+  } catch (error) {
+    console.warn('Rate limit check failed:', error)
+    return {allowed: true, remainingRequests: RATE_LIMIT_REQUESTS_PER_DAY, source: 'allowed'}
+  }
+}
+
+// Update rate limit cookie with new data
+function updateRateLimitCookie(request: NextRequest, username: string, cachedData?: UserStatsData): NextResponse | null {
+  if (!RATE_LIMIT_ENABLED) return null
+
+  try {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const cookieName = `xstats_ratelimit_${ip.replace(/\./g, '_')}`
+
+    // Get current data
+    const cookieValue = request.cookies.get(cookieName)?.value
+    let rateLimitData: {requests: number[]; username?: string; cachedData?: UserStatsData} = {requests: []}
+
+    if (cookieValue) {
+      try {
+        rateLimitData = JSON.parse(cookieValue)
+      } catch {
+        rateLimitData = {requests: []}
+      }
+    }
+
+    // Update with new data
+    rateLimitData.username = username
+    if (cachedData) {
+      rateLimitData.cachedData = cachedData
+    }
+
+    // Clean old requests
+    const now = Date.now()
+    const oneDayMs = 24 * 60 * 60 * 1000
+    rateLimitData.requests = rateLimitData.requests.filter((timestamp) => now - timestamp < oneDayMs)
+
+    // Create response with updated cookie
+    const response = NextResponse.json({success: true})
+    response.cookies.set(cookieName, JSON.stringify(rateLimitData), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60, // 24 hours
+    })
+
+    return response
+  } catch (error) {
+    console.warn('Rate limit cookie update failed:', error)
+    return null
+  }
+}
 export async function POST(request: NextRequest) {
   const requestId = Math.random().toString(36).substring(7)
-  console.log(`🔄 X API Request - Mode: ${LITE_MODE ? 'LITE' : 'FULL'} - Request ID: ${requestId} – ${DETAILED_LOGGING ? '🛠️' : '👁️'}`)
+  console.log(`🔄 X API Request - Mode: ${LITE_MODE ? 'LITE' : 'FULL'} - Request ID: ${requestId}${DETAILED_LOGGING ? ' [DETAIL]' : ''}${CACHE_ENABLED ? ' [CACHE]' : ''}${RATE_LIMIT_ENABLED ? ' [RATE]' : ''}`)
 
   try {
     const body = (await request.json()) as GenerateStatsParams
@@ -127,6 +302,74 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check rate limiting first
+    const rateLimitResult = checkRateLimit(request, username)
+    if (!rateLimitResult.allowed) {
+      if (DETAILED_LOGGING) {
+        console.log(`🚫 Rate limit exceeded - Request ID: ${requestId}`, {
+          username,
+          communitySlug,
+          source: rateLimitResult.source,
+          remainingRequests: rateLimitResult.remainingRequests,
+        })
+      }
+
+      if (rateLimitResult.source === 'rate_limited_cache' && rateLimitResult.cachedData) {
+        // Return cached data with rate limit warning
+        return NextResponse.json({
+          data: rateLimitResult.cachedData,
+          source: 'rate_limited_cache',
+          warning: `Rate limit exceeded (${RATE_LIMIT_REQUESTS_PER_DAY} requests per day). Showing cached data.`,
+        })
+      } else {
+        // Block request
+        return NextResponse.json(
+          {
+            error: 'Rate limit exceeded',
+            message: `Maximum ${RATE_LIMIT_REQUESTS_PER_DAY} requests per day allowed. Try again tomorrow.`,
+            source: 'rate_limited_blocked',
+            timestamp: new Date().toISOString(),
+          },
+          {status: 429},
+        )
+      }
+    }
+
+    // Check cache before making API calls
+    const cacheResult = await checkStatsCache(username, communitySlug, CACHE_TTL_HOURS)
+    if (cacheResult) {
+      if (DETAILED_LOGGING) {
+        console.log(`💾 Cache hit - Request ID: ${requestId}`, {
+          username,
+          communitySlug,
+          cacheAge: Math.round((Date.now() - cacheResult.data.stats.raw.tweets) / (1000 * 60 * 60)), // rough hours
+        })
+      }
+
+      // Update rate limit cookie
+      const cookieResponse = updateRateLimitCookie(request, username, cacheResult.data)
+      if (cookieResponse) {
+        cookieResponse.headers.set('Content-Type', 'application/json')
+        return NextResponse.json(
+          {
+            data: cacheResult.data,
+            source: 'cache',
+          },
+          {headers: cookieResponse.headers},
+        )
+      }
+
+      return NextResponse.json({
+        data: cacheResult.data,
+        source: 'cache',
+      })
+    }
+
+    // Cache miss - proceed with fresh API calls
+    if (DETAILED_LOGGING) {
+      console.log(`🔄 Cache miss - proceeding with fresh request - Request ID: ${requestId}`)
+    }
+
     // Get user info
     if (DETAILED_LOGGING) {
       console.log(`👤 Fetching user info - Request ID: ${requestId}`, {username})
@@ -205,11 +448,12 @@ export async function POST(request: NextRequest) {
       saveWarning = 'Warning: Stats generated but failed to save to database.'
     }
 
-    const responseData = saveWarning ? {data: statsData, warning: saveWarning} : {data: statsData}
+    const responseData = saveWarning ? {data: statsData, warning: saveWarning, source: 'fresh'} : {data: statsData, source: 'fresh'}
 
     if (DETAILED_LOGGING) {
       console.log(`📤 Sending response - Request ID: ${requestId}`, {
         hasWarning: Boolean(saveWarning),
+        source: 'fresh',
         userId: statsData.user.id,
         tweetsProcessed: statsData.stats.raw.tweets,
         impressions: statsData.stats.calculated.impressions,
@@ -218,8 +462,11 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    if (saveWarning) {
-      return NextResponse.json(responseData)
+    // Update rate limit cookie with fresh data for potential future rate limiting
+    const cookieResponse = updateRateLimitCookie(request, username, statsData)
+    if (cookieResponse) {
+      cookieResponse.headers.set('Content-Type', 'application/json')
+      return NextResponse.json(responseData, {headers: cookieResponse.headers})
     }
 
     return NextResponse.json(responseData)
