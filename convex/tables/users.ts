@@ -1,4 +1,4 @@
-import {mutation, query} from '../_generated/server'
+import {mutation, query} from '@convex/_generated/server'
 import {v} from 'convex/values'
 
 // Create or update user
@@ -64,5 +64,15 @@ export const getUserByUsername = query({
       .query('users')
       .withIndex('by_username', (q) => q.eq('username', args.username))
       .unique()
+  },
+})
+
+// Get all users
+export const getAllUsers = query({
+  args: {},
+  handler: async (ctx) => {
+    const users = await ctx.db.query('users').collect()
+    // Sort by lastActivity in descending order (most recent first)
+    return users.sort((a, b) => b.lastActivity - a.lastActivity)
   },
 })

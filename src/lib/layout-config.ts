@@ -12,6 +12,9 @@ export const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'xstats',
+  title: {
+    template: '%s — xstats by @suitrcommunity',
+    default: 'xstats by @suitrcommunity',
+  },
   description: 'create and share auto-updating stat cards with metrics from X — followers, tweets, engagement.',
 }

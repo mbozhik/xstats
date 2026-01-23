@@ -1,4 +1,5 @@
-import {mutation, query} from '../_generated/server'
+import type {Doc} from '@convex/_generated/dataModel'
+import {mutation, query} from '@convex/_generated/server'
 import {v} from 'convex/values'
 
 // Create stats record
@@ -73,5 +74,44 @@ export const getRecentStatsForUserAndCommunity = query({
       .filter((q) => q.gte(q.field('_creationTime'), args.since))
       .order('desc') // most recent first
       .take(1) // only need the most recent
+  },
+})
+
+// Helper function to populate user data
+function populateUser(user: Doc<'users'> | null) {
+  if (!user) return null
+  return {
+    id: user.id,
+    username: user.username,
+    name: user.name,
+    avatar: user.avatar,
+  }
+}
+
+// Helper function to populate community data
+function populateCommunity(community: Doc<'communities'> | null) {
+  if (!community) return null
+  return {
+    name: community.name,
+    username: community.username,
+    slug: community.slug,
+    avatar: community.avatar,
+    hashtag: community.hashtag,
+  }
+}
+
+// Get all stats with populated user and community data
+export const getAllStats = query({
+  args: {},
+  handler: async (ctx) => {
+    const stats = await ctx.db.query('stats').order('desc').collect()
+
+    return Promise.all(
+      stats.map(async (stat) => ({
+        ...stat,
+        user: populateUser(await ctx.db.get(stat.userId)),
+        community: populateCommunity(await ctx.db.get(stat.communityId)),
+      })),
+    )
   },
 })

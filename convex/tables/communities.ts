@@ -1,4 +1,4 @@
-import {mutation, query} from '../_generated/server'
+import {mutation, query} from '@convex/_generated/server'
 import {v} from 'convex/values'
 
 // Create community
@@ -46,5 +46,13 @@ export const getCommunityById = query({
   args: {id: v.id('communities')},
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id)
+  },
+})
+
+// Get all communities
+export const getAllCommunities = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query('communities').order('desc').collect()
   },
 })
