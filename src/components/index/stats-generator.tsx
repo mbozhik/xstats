@@ -122,7 +122,7 @@ export default function StatsGenerator() {
                   <div className="space-y-0.5">
                     <H4 className="font-semibold">@{username}</H4>
 
-                    <SMALL className="text-muted-foreground">{userData.exists ? (userData.lastScraped ? `Last analyzed ${getTimeAgo(userData.lastScraped)} (${userData.requestCount})` : 'Data collection running...') : 'Profile not indexed'}</SMALL>
+                    <SMALL className="text-muted-foreground">{userData.exists ? (userData.lastScraped ? `Last analyzed ${getTimeAgo(userData.lastScraped)} (${userData.requestCount})` : 'Data collection running...') : 'Profile not yet analyzed'}</SMALL>
                   </div>
                 </div>
 
