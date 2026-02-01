@@ -10,8 +10,8 @@ export const createCommunity = mutation({
     id: v.string(),
     username: v.string(),
     avatar: v.string(),
-    hashtag: v.string(),
-    cashtag: v.string(),
+    hashtag: v.array(v.string()),
+    cashtag: v.array(v.string()),
     isActive: v.boolean(),
   },
   handler: async (ctx, args) => {

@@ -25,8 +25,8 @@ export default defineSchema({
     id: v.string(), // X id
     username: v.string(), // X username to track (pudgypenguins)
     avatar: v.string(), // profile picture from X
-    hashtag: v.string(), // hashtags to track (#PENGU)
-    cashtag: v.string(), // cashtags to track ($PENGU)
+    hashtag: v.array(v.string()), // hashtags to track (#PENGU)
+    cashtag: v.array(v.string()), // cashtags to track ($PENGU)
 
     isActive: v.boolean(), // whether community is active
   })

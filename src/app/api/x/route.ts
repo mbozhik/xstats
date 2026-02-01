@@ -627,15 +627,15 @@ async function getCommunityTargets(communitySlug: string) {
     }
 
     // Validate that community has at least one target
-    if (!community.username && !community.hashtag && !community.cashtag) {
+    if (!community.username && community.hashtag.length === 0 && community.cashtag.length === 0) {
       throw new Error(`Community "${communitySlug}" has no search targets configured`)
     }
 
     // Return targets in the format expected by search function
     return {
       username: community.username || '',
-      hashtag: community.hashtag || '',
-      cashtag: community.cashtag || '',
+      hashtag: community.hashtag,
+      cashtag: community.cashtag,
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -645,7 +645,7 @@ async function getCommunityTargets(communitySlug: string) {
   }
 }
 
-async function searchUserTweets(username: string, targets: {username: string; hashtag: string; cashtag: string}, requestId: string): Promise<{data: XSearchResponse; metrics: SearchMetrics}> {
+async function searchUserTweets(username: string, targets: {username: string; hashtag: string[]; cashtag: string[]}, requestId: string): Promise<{data: XSearchResponse; metrics: SearchMetrics}> {
   const startTime = Date.now()
   let apiCalls = 0
   const cacheHit = false
@@ -656,24 +656,45 @@ async function searchUserTweets(username: string, targets: {username: string; ha
   let query: string
 
   if (LITE_MODE) {
-    // Simple lite mode: search only by hashtag (without # prefix) in user's tweets
-    query = `${targets.hashtag} (from:${username}) since:${getOneYearAgoDate()}`
+    // Simple lite mode: search by all hashtags and cashtags in user's tweets
+    const liteConditions: string[] = []
+
+    if (targets.hashtag && targets.hashtag.length > 0) {
+      targets.hashtag.forEach(hashtag => {
+        liteConditions.push(`${hashtag}`) // hashtag without # prefix
+        liteConditions.push(`#${hashtag}`)
+      });
+    }
+
+    if (targets.cashtag && targets.cashtag.length > 0) {
+      targets.cashtag.forEach(cashtag => {
+        liteConditions.push(`$${cashtag}`)
+      });
+    }
+
+    // Join all conditions with OR and add user filter
+    const conditionsQuery = liteConditions.length > 0 ? `(${liteConditions.join(' OR ')}) ` : ''
+    query = `${conditionsQuery}(from:${username}) since:${getOneYearAgoDate()}`
   } else {
     // Full mode: comprehensive search with all community targets
     // Fixed logic: (from:username) AND (community_condition1 OR community_condition2 OR ...)
     const queryParts = [`(from:${username})`]
 
     // Build community conditions
-    const communityConditions = []
+    const communityConditions: string[] = []
     if (targets.username) {
       communityConditions.push(`@${targets.username}`)
     }
-    if (targets.hashtag) {
-      communityConditions.push(`${targets.hashtag}`) // hashtag without # prefix
-      communityConditions.push(`#${targets.hashtag}`)
+    if (targets.hashtag && targets.hashtag.length > 0) {
+      targets.hashtag.forEach(hashtag => {
+        communityConditions.push(`${hashtag}`) // hashtag without # prefix
+        communityConditions.push(`#${hashtag}`)
+      });
     }
-    if (targets.cashtag) {
-      communityConditions.push(`$${targets.cashtag}`)
+    if (targets.cashtag && targets.cashtag.length > 0) {
+      targets.cashtag.forEach(cashtag => {
+        communityConditions.push(`$${cashtag}`)
+      });
     }
 
     // Add community conditions if any exist

@@ -53,6 +53,67 @@ export default function DataPage() {
           </TabsTrigger>
         </TabsList>
 
+        <TabsContent value="stats" className="space-y-4">
+          <Card>
+            <CardContent>
+              {!stats ? (
+                <LoadingSkeleton />
+              ) : stats.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">No stats found</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Community</TableHead>
+                      <TableHead>Tweets</TableHead>
+                      <TableHead>Impressions</TableHead>
+                      <TableHead>Engagement</TableHead>
+                      <TableHead>Engagement Rate</TableHead>
+                      <TableHead>Created</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {stats?.map((stat) => (
+                      <TableRow key={stat._id}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={stat.user?.avatar} alt={stat.user?.name} />
+                              <AvatarFallback className="text-xs">{stat.user?.name?.charAt(0) || '?'}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-medium text-sm">@{stat.user?.username || 'Unknown'}</div>
+                              <div className="text-xs text-muted-foreground">{stat.user?.name || 'Unknown User'}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={stat.community?.avatar} alt={stat.community?.name} />
+                              <AvatarFallback className="text-xs">{stat.community?.name?.charAt(0) || '?'}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-medium text-sm">{stat.community?.name || 'Unknown'}</div>
+                              <div className="text-xs text-muted-foreground">@{stat.community?.username || 'NULL'}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center font-mono">{stat.raw.tweets}</TableCell>
+                        <TableCell className="text-right font-mono">{stat.calculated.impressions.toLocaleString()}</TableCell>
+                        <TableCell className="text-right font-mono">{stat.calculated.engagement.toLocaleString()}</TableCell>
+                        <TableCell className="text-center">{stat.calculated.engagementRate ? `${stat.calculated.engagementRate.toFixed(2)}%` : 'N/A'}</TableCell>
+                        <TableCell className="text-right text-sm text-muted-foreground">{getTimeAgo(stat._creationTime)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="users" className="space-y-4">
           <Card>
             <CardContent>
@@ -128,77 +189,26 @@ export default function DataPage() {
                         <TableCell>@{community.username}</TableCell>
                         <TableCell className="font-mono text-sm">{community.slug}</TableCell>
                         <TableCell>
-                          <Badge variant="outline">{community.hashtag}</Badge>
+                          <div className="flex flex-wrap gap-1">
+                            {community.hashtag.map((tag, index) => (
+                              <Badge key={index} variant="outline">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline">{community.cashtag}</Badge>
+                          <div className="flex flex-wrap gap-1">
+                            {community.cashtag.map((tag, index) => (
+                              <Badge key={index} variant="outline">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <Badge variant={community.isActive ? 'default' : 'secondary'}>{community.isActive ? 'Active' : 'Inactive'}</Badge>
                         </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="stats" className="space-y-4">
-          <Card>
-            <CardContent>
-              {!stats ? (
-                <LoadingSkeleton />
-              ) : stats.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">No stats found</div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>User</TableHead>
-                      <TableHead>Community</TableHead>
-                      <TableHead>Tweets</TableHead>
-                      <TableHead>Impressions</TableHead>
-                      <TableHead>Engagement</TableHead>
-                      <TableHead>Engagement Rate</TableHead>
-                      <TableHead>Created</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {stats?.map((stat) => (
-                      <TableRow key={stat._id}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-6 w-6">
-                              <AvatarImage src={stat.user?.avatar} alt={stat.user?.name} />
-                              <AvatarFallback className="text-xs">{stat.user?.name?.charAt(0) || '?'}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-medium text-sm">@{stat.user?.username || 'Unknown'}</div>
-                              <div className="text-xs text-muted-foreground">{stat.user?.name || 'Unknown User'}</div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-6 w-6">
-                              <AvatarImage src={stat.community?.avatar} alt={stat.community?.name} />
-                              <AvatarFallback className="text-xs">{stat.community?.name?.charAt(0) || '?'}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-medium text-sm">{stat.community?.name || 'Unknown'}</div>
-                              <div className="text-xs text-muted-foreground">
-                                @{stat.community?.username || 'unknown'} • {stat.community?.hashtag || '#unknown'}
-                              </div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-center font-mono">{stat.raw.tweets}</TableCell>
-                        <TableCell className="text-right font-mono">{stat.calculated.impressions.toLocaleString()}</TableCell>
-                        <TableCell className="text-right font-mono">{stat.calculated.engagement.toLocaleString()}</TableCell>
-                        <TableCell className="text-center">{stat.calculated.engagementRate ? `${stat.calculated.engagementRate.toFixed(2)}%` : 'N/A'}</TableCell>
-                        <TableCell className="text-right text-sm text-muted-foreground">{getTimeAgo(stat._creationTime)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
